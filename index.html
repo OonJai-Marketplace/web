@@ -53,16 +53,51 @@
   </script>
 
   <!-- ========================================== -->
-  <!--                 GOOGLE FONTS               -->
+  <!--                   GOOGLE FONTS             -->
   <!-- ========================================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- ========================================== -->
-  <!--                 CSS STYLESHEET             -->
+  <!--                   CSS STYLESHEET           -->
   <!-- ========================================== -->
   <style>
+    /* --- REMOVABLE UNDER DEVELOPMENT WATERMARK STYLES --- */
+    .dev-watermark-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 3000;
+      background: linear-gradient(135deg, #78350f 0%, #b45309 100%);
+      border-bottom: 2px solid #f59e0b;
+      color: #ffffff;
+      padding: 8px 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .dev-watermark-header {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fde68a;
+      margin-bottom: 2px;
+    }
+    .dev-watermark-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #fef3c7;
+    }
+    .top-nav {
+      top: 52px !important; 
+    }
+    .app-container {
+      padding-top: 130px !important;
+    }
+
     /* --- 1. THEME COLORS & VARIABLES --- */
     :root {
       --bg-dark: #010c0a; --bg-gradient: radial-gradient(circle at 85% 15%, #083c33 0%, #041f1a 60%, #010c0a 100%);
@@ -461,6 +496,13 @@
   </style>
 </head>
 <body>
+
+  <!-- REMOVE THIS ENTIRE BLOCK WHEN WEBSITE IS FULLY POLISHED -->
+  <div class="dev-watermark-banner" role="region" aria-label="Development Notice">
+    <div class="dev-watermark-header">⚠️ Notice: Website Under Development</div>
+    <div class="dev-watermark-text">This site is currently in progress and being prepared for launch. Features and content may change.</div>
+  </div>
+  <!-- END OF REMOVABLE BLOCK -->
 
   <!-- ========================================== -->
   <!--                TOP NAVIGATION              -->
@@ -1347,7 +1389,7 @@ const App = (function() {
       const card = document.createElement('div'); card.className = 'product-card';
       const countHtml = totalCount > 0 ? `<span class="item-count-text">×${totalCount}</span>` : '';
       const actionBtn = item.isCustom ? `<button class="add-btn" onclick="App.openCustomModal('${currentCategory}', '${item.id}')">Customize</button>`
-                          : `<button class="add-btn" onclick="App.addMenuItemToCart('${currentCategory}', '${item.id}', this)">Add +</button>`;
+                        : `<button class="add-btn" onclick="App.addMenuItemToCart('${currentCategory}', '${item.id}', this)">Add +</button>`;
       
       const thumbnailSrc = item.images && item.images.length > 0 ? item.images[0] : defaultDummyImages[0];
       const imageHtml = `<img src="${thumbnailSrc}" class="product-image" alt="${item.name}" loading="lazy" onclick="App.openGallery('${currentCategory}', '${item.id}')" aria-label="View images and details for ${item.name}">`;
