@@ -69,6 +69,7 @@
       --card-bg: rgba(2, 18, 15, 0.75); --border-color: #1e4d40; --accent-green: #4ade80;
       --wa-color: #25D366; --msgr-color: #0084FF; --text-bright: #ffffff;
       --text-muted: #94a3b8; --text-subhead: #cbd5e1; --border-radius-main: 14px; --border-radius-sm: 10px;
+      --menu-image-outline: rgba(74, 222, 128, 0.6); /* Constant light color for menu item image outlines */
     }
 
     /* ERADICATE BLUE TAP HIGHLIGHT */
@@ -222,7 +223,7 @@
       height: 75px; 
       border-radius: var(--border-radius-sm); 
       object-fit: cover; 
-      border: 1px solid var(--border-color); 
+      border: 1px solid var(--menu-image-outline); /* Updated to light constant color */
       flex-shrink: 0; 
       cursor: pointer; 
       transition: transform 0.2s ease, border-color 0.2s ease; 
