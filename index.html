@@ -57,6 +57,15 @@
   <!-- ========================================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Preconnect to Image Host to save DNS handshake time -->
+  <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
+  <link rel="dns-prefetch" href="https://i.postimg.cc">
+  
+  <!-- Preload Critical First-Paint Images -->
+  <link rel="preload" as="image" href="https://i.postimg.cc/8PH5RscH/banner.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="https://i.postimg.cc/DZmP1t7Q/logo.jpg" fetchpriority="high">
+  
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- ========================================== -->
@@ -521,7 +530,7 @@
   </nav>
 
   <!-- ========================================== -->
-  <!--           BOTTOM NAVIGATION (MOBILE)       -->
+  <!--            BOTTOM NAVIGATION (MOBILE)      -->
   <!-- ========================================== -->
   <nav class="bottom-nav" role="tablist" aria-label="Mobile Navigation">
     <button class="bottom-nav-tab active" data-tab="home" onclick="App.switchMainTab('home')" role="tab" aria-selected="true">
@@ -1212,12 +1221,12 @@ const App = (function() {
     }
 
     let html = '', dotsHtml = '';
-    html += `<img src="${validImages[validImages.length - 1]}" class="carousel-img clone" draggable="false" loading="eager"/>`;
+    html += `<img src="${validImages[validImages.length - 1]}" class="carousel-img clone" draggable="false" loading="eager" decoding="async"/>`;
     validImages.forEach((imgLink, i) => {
-      html += `<img src="${imgLink}" class="carousel-img" draggable="false" loading="lazy"/>`;
+      html += `<img src="${imgLink}" class="carousel-img" draggable="false" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async"/>`;
       dotsHtml += `<span class="dot" onclick="App.goToSlide('${trackId}', ${i + 1})"></span>`;
     });
-    html += `<img src="${validImages[0]}" class="carousel-img clone" draggable="false" loading="lazy"/>`;
+    html += `<img src="${validImages[0]}" class="carousel-img clone" draggable="false" loading="lazy" decoding="async"/>`;
     
     track.innerHTML = html; 
     dots.innerHTML = dotsHtml;
@@ -1291,7 +1300,7 @@ const App = (function() {
       const validImages = imagesArray.filter(link => link.trim() !== "");
       if (validImages.length === 0) return;
 
-      container.innerHTML = validImages.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" alt="Home Preview" loading="lazy">`).join('');
+      container.innerHTML = validImages.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" alt="Home Preview" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} decoding="async">`).join('');
       if (validImages.length > 1) {
         let currentIndex = 0;
         const imgs = container.querySelectorAll('img');
@@ -1392,7 +1401,7 @@ const App = (function() {
                         : `<button class="add-btn" onclick="App.addMenuItemToCart('${currentCategory}', '${item.id}', this)">Add +</button>`;
       
       const thumbnailSrc = item.images && item.images.length > 0 ? item.images[0] : defaultDummyImages[0];
-      const imageHtml = `<img src="${thumbnailSrc}" class="product-image" alt="${item.name}" loading="lazy" onclick="App.openGallery('${currentCategory}', '${item.id}')" aria-label="View images and details for ${item.name}">`;
+      const imageHtml = `<img src="${thumbnailSrc}" class="product-image" alt="${item.name}" loading="lazy" decoding="async" onclick="App.openGallery('${currentCategory}', '${item.id}')" aria-label="View images and details for ${item.name}">`;
 
       card.innerHTML = `
         <div style="display: flex; gap: 12px; align-items: center; width: 100%;">
