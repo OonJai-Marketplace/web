@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Oon Jai Marketplace</title>
+  <meta name="app-version" content="2026-10-16-safari-1" />
 
   <!-- ========================================== -->
   <!--                SEO & SEARCH LOGO           -->
@@ -133,6 +134,7 @@
       height: 100vh !important; 
       overscroll-behavior: none !important;
     }
+    body.modal-open { position: fixed; left: 0; right: 0; width: 100%; }
 
     /* --- 2. TOP NAVIGATION --- */
     .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(1, 12, 10, 0.95); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; }
@@ -503,8 +505,21 @@
     .gallery-modal-box > * { flex-shrink: 0; }
     .gallery-dots { position: static; padding: 10px; }
     .modal-box, #cartSection { touch-action: pan-y pinch-zoom; }
+    .modal-box, .gallery-modal-box { overscroll-behavior: contain; }
     .dot { border: 0; padding: 0; }
     #notifMessage { white-space: pre-line; }
+    #notifMessage:has(#messengerOrderText) { white-space: normal; text-align: left; }
+    .messenger-checkout { display: grid; gap: 12px; }
+    .messenger-checkout .btn-msgr { text-decoration: none; min-height: 44px; }
+    .messenger-help { font-size: 12px; line-height: 1.5; }
+    .messenger-help summary { cursor: pointer; }
+    .messenger-help p { margin-top: 8px; }
+    [aria-disabled="true"] { opacity: 0.6; cursor: wait; }
+    @media (hover: none) and (pointer: coarse) {
+      .form-input { font-size: 16px; }
+      .option-label, .add-btn, .btn-wa, .btn-msgr, .cat-btn { min-height: 44px; }
+      .close-modal, .cart-close-btn, .gallery-close-btn { min-width: 44px; min-height: 44px; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
@@ -948,6 +963,7 @@ const App = (function() {
   let formSubmitting = false;
   let deviceToken = '';
   let cartHome = null;
+  let lockedScrollY = 0;
   let cart = [];
   let currentActiveCustomItem = null;
   let editingCartIndex = null;
@@ -1119,11 +1135,20 @@ const App = (function() {
 
   function setScrollLock() {
     const top = modalStack.filter(modal => modal.classList.contains('active')).at(-1);
+    const wasLocked = document.body.classList.contains('modal-open');
+    if (top && !wasLocked) {
+      lockedScrollY = window.scrollY;
+      document.body.style.top = `-${lockedScrollY}px`;
+    }
     document.documentElement.classList.toggle('modal-open', !!top);
     document.body.classList.toggle('modal-open', !!top);
     for (const child of document.body.children) {
       if (child.matches('script, style')) continue;
       child.inert = !!top && child !== top;
+    }
+    if (!top && wasLocked) {
+      document.body.style.top = '';
+      window.scrollTo(0, lockedScrollY);
     }
   }
 
@@ -1910,27 +1935,81 @@ const App = (function() {
 
     executeMessenger: async function() {
       const msg = this._buildOrderMsg();
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      const destination = isIOS ? `https://www.facebook.com/${MESSENGER_USERNAME}` : `https://m.me/${MESSENGER_USERNAME}`;
-      this.triggerCustomPrompt(`<p id="copyOrderStatus" role="status">Copying your order…</p>
-        <label for="messengerOrderText">Order details</label>
-        <textarea id="messengerOrderText" class="form-input" rows="7" readonly></textarea>
-        <p>Open our ${isIOS ? 'Facebook page, tap Message,' : 'Messenger chat'} and paste your order. Send it there to place the order.</p>
-        <a class="btn-msgr" href="${destination}" rel="noopener" target="_blank">Open ${isIOS ? 'Facebook Page' : 'Messenger'} ↗</a>
-        <button class="cat-btn" onclick="App.closeNotification()">Close</button>`, 'Send Your Order');
+      saveCart();
+      this.triggerCustomPrompt(`<div class="messenger-checkout">
+        <p id="copyOrderStatus" role="status">Copying your order…</p>
+        <label for="messengerOrderText">Your order for Oon Jai Marketplace</label>
+        <textarea id="messengerOrderText" class="form-input" rows="6" readonly></textarea>
+        <button class="cat-btn" id="copyOrderBtn" onclick="App.copyMessengerOrder()">Copy order again</button>
+        <p>Open our Messenger chat, paste your order, then tap <strong>Send</strong>.</p>
+        <a id="openMessengerLink" class="btn-msgr" aria-disabled="true" target="_self">Open Messenger</a>
+        <div id="shareOrderOption" hidden>
+          <button id="shareOrderBtn" class="btn-msgr" style="width: 100%;" onclick="App.shareMessengerOrder()">Share order…</button>
+          <p class="messenger-help" style="margin-top: 8px;">If the link doesn’t open Messenger, use Share order. Choose Messenger if listed, then select Oon Jai Marketplace.</p>
+          <p id="shareOrderStatus" class="messenger-help" role="status"></p>
+        </div>
+        <details class="messenger-help"><summary>Messenger didn’t open?</summary>
+          <p>If the App Store opens, return here and open the Messenger app yourself. Search for <strong>Oon Jai Marketplace (@${MESSENGER_USERNAME})</strong>, paste your order, and tap Send. Your basket is saved in this browser tab.</p>
+        </details>
+        <button class="cat-btn" onclick="App.closeNotification()">Back to order</button>
+        </div>`, 'Send Your Order');
+      document.getElementById('messengerOrderText').value = msg;
+      try {
+        const canShare = typeof navigator.share === 'function' && (!navigator.canShare || navigator.canShare({ text: msg }));
+        document.getElementById('shareOrderOption').hidden = !canShare;
+      } catch { /* The copy and direct-chat options remain available. */ }
+      await this.copyMessengerOrder();
+    },
+
+    shareMessengerOrder: async function() {
+      const order = document.getElementById('messengerOrderText');
+      const button = document.getElementById('shareOrderBtn');
+      const status = document.getElementById('shareOrderStatus');
+      if (!order || !navigator.share || button.disabled) return;
+      button.disabled = true;
+      try {
+        // Invoke directly from the tap, before any asynchronous clipboard work.
+        await navigator.share({ text: order.value });
+        if (status.isConnected) status.textContent = 'Check Messenger to confirm that you sent the order.';
+      } catch (error) {
+        if (status.isConnected) status.textContent = error.name === 'AbortError'
+          ? 'Sharing canceled. Your order is still here.'
+          : 'Sharing is unavailable. You can still copy and paste your order.';
+      } finally {
+        if (button.isConnected) button.disabled = false;
+      }
+    },
+
+    copyMessengerOrder: async function() {
       const orderText = document.getElementById('messengerOrderText');
       const status = document.getElementById('copyOrderStatus');
-      orderText.value = msg;
+      const button = document.getElementById('copyOrderBtn');
+      const link = document.getElementById('openMessengerLink');
+      if (!orderText || button.disabled) return;
+      button.disabled = true;
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled', 'true');
+      status.textContent = 'Copying your order…';
       let copied = false;
+      let timeout;
       try {
         if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(msg);
+          await Promise.race([
+            navigator.clipboard.writeText(orderText.value),
+            new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Copy timed out')), 4000); })
+          ]);
           copied = true;
         }
-      } catch { /* The selectable order remains available if permission is denied. */ }
+      } catch { /* Keep a manual copy option if permission is denied or delayed. */ }
+      finally { clearTimeout(timeout); }
       if (!status.isConnected) return;
-      if (!copied) copied = this._fallbackCopyText(msg);
+      if (!copied) copied = this._fallbackCopyText(orderText.value);
       status.textContent = copied ? 'Order copied. Paste it into the chat, then send it.' : 'Please copy your order manually from the box below.';
+      button.disabled = false;
+      // A real, directly tapped cross-domain link preserves Safari's native app handoff.
+      // Do not replace this with window.open after an await or a timed App Store fallback.
+      link.href = `https://m.me/${MESSENGER_USERNAME}`;
+      link.removeAttribute('aria-disabled');
       if (!copied) { orderText.focus(); orderText.select(); }
     },
 

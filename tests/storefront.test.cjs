@@ -23,10 +23,11 @@ after(async () => {
   await new Promise(resolve => server?.close(resolve));
 });
 
-async function visit(t, { mobile = false, init, hash = '' } = {}) {
+async function visit(t, { mobile = false, device, init, hash = '' } = {}) {
   const context = await browser.newContext({
     viewport: mobile ? { width: 390, height: 844 } : { width: 1366, height: 900 },
     hasTouch: mobile,
+    ...(device ? playwright.devices[device] : {}),
     reducedMotion: 'reduce'
   });
   t.after(() => context.close());
@@ -182,7 +183,7 @@ test('failed clipboard copy leaves a selectable order and never claims success',
     document.querySelector('[name="orderType"]').click();
     App.executeMessenger();
   });
-  await page.waitForFunction(() => document.querySelector('#messengerOrderText'));
+  await page.waitForFunction(() => document.querySelector('#openMessengerLink[href]'));
   assert.match(await page.locator('#messengerOrderText').inputValue(), /The Classic.*120,000 Kip/);
   assert.match(await page.locator('#notifMessage').innerText(), /copy.*manually/i);
   assert.ok(page.url().startsWith(baseURL));
@@ -317,7 +318,7 @@ test('form validates length, times out, and prevents concurrent duplicate submis
   assert.equal((await page.locator('#message').inputValue()).split(' ').length, 20);
 });
 
-test('Messenger waits for the clipboard result and iPad gets the Facebook route', async t => {
+test('Messenger waits for copying and gives iPad a direct native conversation link', async t => {
   const { page } = await visit(t, { init: () => {
     Object.defineProperty(navigator, 'userAgent', { value: 'iPad' });
     Object.defineProperty(navigator, 'clipboard', { value: { writeText: text => {
@@ -333,7 +334,9 @@ test('Messenger waits for the clipboard result and iPad gets the Facebook route'
   assert.match(await page.locator('#copyOrderStatus').innerText(), /Copying/);
   await page.evaluate(() => window.resolveCopy());
   assert.match(await page.locator('#copyOrderStatus').innerText(), /Order copied/);
-  assert.equal(await page.locator('#notifMessage a').getAttribute('href'), 'https://www.facebook.com/oon.jai.laos');
+  assert.equal(await page.locator('#notifMessage a').getAttribute('href'), 'https://m.me/oon.jai.laos');
+  assert.equal(await page.locator('#notifMessage a').getAttribute('target'), '_self');
+  assert.equal(await page.locator('#notifMessage a').getAttribute('onclick'), null);
   assert.match(await page.evaluate(() => window.copiedText), /120,000 Kip/);
 });
 
@@ -379,4 +382,103 @@ test('phone, tablet, and desktop layouts fit the viewport on all tabs', async t 
     }
   }
   assert.deepEqual(errors, []);
+});
+
+test('iPhone retains the reading position after opening and closing nested dialogs', async t => {
+  const { page, errors } = await visit(t, { device: 'iPhone 13' });
+  await page.evaluate(() => { App.switchMainTab('menu'); window.scrollTo(0, 600); });
+  const before = await page.evaluate(() => scrollY);
+  assert.ok(before > 300);
+  await page.locator('#floatingCartBtn').tap();
+  await page.evaluate(() => App.handleCheckout('wa'));
+  await page.locator('#notifAlertAction button').tap();
+  await page.locator('.cart-close-btn').tap();
+  assert.equal(await page.evaluate(() => scrollY), before);
+  assert.deepEqual(errors, []);
+});
+
+test('iPhone touch checkout and customization work in portrait and landscape', async t => {
+  for (const device of ['iPhone 13', 'iPhone 13 landscape', 'iPhone SE']) {
+    const { page, errors } = await visit(t, { device });
+    await page.locator('.bottom-nav-tab[data-tab="menu"]').tap();
+    await page.locator('[data-category="bowl"]').tap();
+    await page.locator('.product-card').filter({ hasText: 'Mini Pack' }).locator('button').tap();
+    await page.locator('[name="custSauce"]').first().tap();
+    await page.locator('[name="custVeggie"]').first().tap();
+    await page.locator('[name="custProtein"]').first().tap();
+    await page.locator('#customModalSubmitBtn').tap();
+    await page.locator('#btnNotifProceed').tap();
+    await page.locator('#floatingCartBtn').tap();
+    await page.locator('#cartSection .btn-msgr').tap();
+    await page.locator('#notifMessage button').filter({ hasText: 'Pick-Up' }).tap();
+    await page.waitForFunction(() => document.querySelector('#openMessengerLink[href]'));
+    assert.match(await page.locator('#messengerOrderText').inputValue(), /Mini Pack.*99,000 Kip/);
+    assert.equal(await page.locator('#notifMessage a').getAttribute('href'), 'https://m.me/oon.jai.laos');
+    assert.deepEqual(errors, [], device);
+  }
+});
+
+test('touch-screen form text and modal controls are large enough to use without zoom', async t => {
+  const { page } = await visit(t, { device: 'iPhone 13' });
+  await page.locator('.bottom-nav-tab[data-tab="hope"]').tap();
+  for (const selector of ['#message', '#name']) {
+    assert.ok(await page.locator(selector).evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 16), selector);
+  }
+  await page.evaluate(() => App.openCustomModal('bowl', 'bw4'));
+  assert.ok((await page.locator('.option-label').first().boundingBox()).height >= 44);
+});
+
+test('native share receives exact order text from a fresh tap without claiming delivery', async t => {
+  const { page, errors } = await visit(t, { device: 'iPhone 13', init: () => {
+    navigator.canShare = () => true;
+    navigator.share = async data => { window.sharedOrder = data; window.shareActivation = navigator.userActivation.isActive; };
+  } });
+  await page.evaluate(() => {
+    App.addMenuItemToCart('burgers', 'b2');
+    document.querySelector('[name="orderType"]').checked = true;
+    App.executeMessenger();
+  });
+  await page.locator('#shareOrderBtn').tap();
+  assert.equal(await page.evaluate(() => window.shareActivation), true);
+  assert.deepEqual(await page.evaluate(() => window.sharedOrder), { text: await page.locator('#messengerOrderText').inputValue() });
+  assert.match(await page.locator('#shareOrderStatus').innerText(), /confirm that you sent/);
+  assert.equal(await page.locator('#floatingCartBadge').innerText(), '1');
+  assert.deepEqual(errors, []);
+});
+
+test('canceled or unavailable native sharing preserves the basket and manual copy', async t => {
+  const { page, errors } = await visit(t, { device: 'iPhone 13', init: () => {
+    navigator.canShare = () => true;
+    navigator.share = async () => { throw new DOMException('Canceled', 'AbortError'); };
+  } });
+  await page.evaluate(() => {
+    App.addMenuItemToCart('burgers', 'b2');
+    document.querySelector('[name="orderType"]').checked = true;
+    App.executeMessenger();
+  });
+  await page.locator('#shareOrderBtn').tap();
+  assert.match(await page.locator('#shareOrderStatus').innerText(), /canceled/i);
+  assert.match(await page.locator('#messengerOrderText').inputValue(), /120,000 Kip/);
+  await page.evaluate(() => { navigator.canShare = () => false; App.executeMessenger(); });
+  assert.equal(await page.locator('#shareOrderOption').isVisible(), false);
+  assert.equal(await page.locator('#floatingCartBadge').innerText(), '1');
+  assert.deepEqual(errors, []);
+});
+
+test('a stalled clipboard request releases the direct-chat link and manual copy', async t => {
+  const { page } = await visit(t, { device: 'iPhone 13', init: () => {
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => new Promise(() => {}) } });
+    document.execCommand = () => false;
+  } });
+  await page.clock.install();
+  await page.evaluate(() => {
+    App.addMenuItemToCart('burgers', 'b2');
+    document.querySelector('[name="orderType"]').checked = true;
+    App.executeMessenger();
+  });
+  assert.equal(await page.locator('#openMessengerLink').getAttribute('href'), null);
+  await page.clock.fastForward(4001);
+  assert.equal(await page.locator('#openMessengerLink').getAttribute('href'), 'https://m.me/oon.jai.laos');
+  assert.equal(await page.locator('#copyOrderBtn').isDisabled(), false);
+  assert.match(await page.locator('#copyOrderStatus').innerText(), /copy.*manually/i);
 });
