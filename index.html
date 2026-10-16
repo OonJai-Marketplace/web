@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Oon Jai Marketplace</title>
-  <meta name="app-version" content="2026-10-16-compact-3" />
+  <meta name="app-version" content="2026-10-16-menu-4" />
 
   <!-- ========================================== -->
   <!--                SEO & SEARCH LOGO           -->
@@ -198,6 +198,32 @@
     .about-link { color: var(--accent-green); text-decoration: none; font-weight: bold; }
 
     /* --- 6. MENU TAB SPECIFIC STYLES --- */
+    #tab-menu .tab-hero-banner { min-height: 0; padding: 12px 10px 10px; }
+    #tab-menu .banner-container { width: 100%; max-width: none; padding: 0; transform: none; }
+    #tab-menu .banner-badge { font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
+    #tab-menu .banner-title { font-size: clamp(22px, 2.5vw, 26px); margin-bottom: 4px; }
+    #tab-menu .banner-divider { margin-bottom: 6px; }
+    #tab-menu .banner-subtitle-menu { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 12px; font-size: 12px; line-height: 1.4; }
+    #tab-menu .menu-hours, #tab-menu .banner-location-link { white-space: nowrap; }
+    #tab-menu .banner-location-link { margin-top: 0; }
+    #tab-menu > .tab-content-wrapper { padding: 10px 10px 16px; }
+    #tab-menu .tab-description-block { padding-bottom: 8px; margin-bottom: 8px; }
+    #tab-menu .menu-italic { display: block; max-width: 720px; margin: 0 auto; font-size: 12px; line-height: 1.45; }
+    #tab-menu .categories-nav { padding: 5px; gap: 4px; }
+    #tab-menu .nav-header { background: none; border: 0; border-radius: 0; font-size: 10px; line-height: 1.2; padding: 2px 4px; margin-bottom: 0; }
+    #tab-menu .categories-nav .cat-btn { padding: 5px 3px; }
+    @media (min-width: 768px) {
+      #tab-menu > .tab-content-wrapper { padding: 12px 14px 18px; }
+      #tab-menu .menu-content-layout { grid-template-columns: 200px minmax(0, 1fr); gap: 12px; }
+      #tab-menu .categories-nav { padding: 8px; }
+      #tab-menu .sidebar-logo { width: 48px; height: 48px; margin-bottom: 4px; }
+      #tab-menu .nav-header { font-size: 11px; padding: 4px; }
+      #tab-menu .categories-nav .cat-btn { padding: 6px 10px; min-height: 32px; font-size: 12px; }
+      #tab-menu .sidebar-bottom-actions { padding-top: 10px; gap: 6px; }
+    }
+    @media (hover: none) and (pointer: coarse) {
+      #tab-menu .categories-nav .cat-btn { min-height: 44px; }
+    }
     .menu-content-layout { display: flex; flex-direction: column; gap: 10px; flex: 1; margin-bottom: 15px; }
     .sidebar-logo { display: none; }
     .categories-nav { flex-shrink: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--border-radius-main); padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; backdrop-filter: blur(10px); }
@@ -608,7 +634,8 @@
             <h1 class="banner-title">Our Wholesome Menu</h1>
             <div class="banner-divider"></div>
             <p class="banner-subtitle banner-subtitle-menu">
-              🕒 Mon–Thu: 11:00 – 14:00, 16:00 – 18:30 | Fri: 11:00 – 14:00<br>
+              <span class="menu-hours">🕒 Mon–Thu: 11:00 – 14:00, 16:00 – 18:30</span>
+              <span class="menu-hours">Fri: 11:00 – 14:00</span>
               <a href="https://maps.app.goo.gl/YojE5Vj56rt93vGC6?g_st=aw" target="_blank" class="banner-location-link" rel="noopener">📍 Vientiane, Laos</a>
             </p>
           </div>
