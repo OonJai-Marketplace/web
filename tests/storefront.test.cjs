@@ -8,6 +8,17 @@ const playwright = require('playwright');
 let browser, server, baseURL;
 before(async () => {
   server = http.createServer((req, res) => {
+    const pathname = new URL(req.url, 'http://localhost').pathname;
+    if (pathname.startsWith('/assets/images/')) {
+      const file = path.resolve(__dirname, '..', '.' + pathname);
+      const imagesRoot = path.resolve(__dirname, '../assets/images') + path.sep;
+      if (!file.startsWith(imagesRoot) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+        res.writeHead(404); res.end(); return;
+      }
+      const mime = { '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.json': 'application/json' };
+      res.setHeader('Content-Type', mime[path.extname(file)] || 'application/octet-stream');
+      res.end(fs.readFileSync(file)); return;
+    }
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.end(fs.readFileSync(path.join(__dirname, '../index.html')));
   });
@@ -481,4 +492,44 @@ test('a stalled clipboard request releases the direct-chat link and manual copy'
   assert.equal(await page.locator('#openMessengerLink').getAttribute('href'), 'https://m.me/oon.jai.laos');
   assert.equal(await page.locator('#copyOrderBtn').isDisabled(), false);
   assert.match(await page.locator('#copyOrderStatus').innerText(), /copy.*manually/i);
+});
+
+test('local menu thumbnails decode and the gallery loads a larger image only when opened', async t => {
+  const { page, errors } = await visit(t, { device: 'iPhone 13', hash: '#menu' });
+  const first = page.locator('.product-image').first();
+  await first.evaluate(img => img.decode());
+  const thumbnail = await first.getAttribute('src');
+  assert.match(thumbnail, /^assets\/images\/.*-thumb\./);
+  assert.equal(await first.evaluate(img => img.naturalWidth <= 225 && img.naturalHeight <= 225), true);
+  assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').some(r => /burger-combo-1-full\./.test(r.name))), false);
+  await first.tap();
+  const gallery = page.locator('#galleryCarouselTrack img').first();
+  await gallery.evaluate(img => img.decode());
+  assert.match(await gallery.getAttribute('src'), /^assets\/images\/.*-full\./);
+  assert.equal(await gallery.evaluate(img => Math.max(img.naturalWidth, img.naturalHeight) > 225), true);
+  assert.deepEqual(errors, []);
+});
+
+test('home preview decodes a responsive local image without downloading hidden galleries', async t => {
+  const { page } = await visit(t, { device: 'iPhone 13' });
+  const preview = page.locator('#homeSliderMenu img').first();
+  await preview.evaluate(img => img.decode());
+  assert.match(await preview.evaluate(img => img.currentSrc), /assets\/images\/home-1-(full|card)\./);
+  assert.equal(await preview.getAttribute('fetchpriority'), 'high');
+  assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').some(r => /review-10-full\./.test(r.name))), false);
+  await page.locator('.bottom-nav-tab[data-tab="hope"]').tap();
+  await page.locator('#hopeCarouselTrack img').first().evaluate(img => img.decode());
+});
+
+test('a failed external photo uses a local fallback without retrying forever', async t => {
+  const { page, errors } = await visit(t, { device: 'iPhone 13' });
+  let requests = 0;
+  await page.route('https://i.postimg.cc/v87p8m4T/cheeser.webp', route => { requests++; return route.abort(); });
+  await page.evaluate(() => App.switchMainTab('menu'));
+  const image = page.locator('.product-image[alt="The Cheeser"]');
+  await image.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => document.querySelector('.product-image[alt="The Cheeser"]').getAttribute('src').includes('image-unavailable'));
+  await image.evaluate(img => img.decode());
+  assert.equal(requests, 1);
+  assert.deepEqual(errors, []);
 });

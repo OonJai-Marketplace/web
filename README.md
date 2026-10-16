@@ -116,19 +116,20 @@ To change the price: Change the number next to price:. Do not use commas or text
 To change the description: Change the text inside the single quotes next to desc:.
 
 📸 PART 5: Changing Pictures (Carousels & Banners)
-Pictures are not uploaded directly to GitHub; they are hosted on Postimages.
+Optimized images are stored in assets/images and published with this website. Menu thumbnails are separate from larger gallery photos. The image manifest records source URLs, file sizes, dimensions, and remaining external images. Five source images could not be retrieved during the October 2026 optimization and retain their existing Postimages URLs.
 
-How to get a new picture link:
+For best loading speed, resize new photos to at most 1200 pixels on the longest side, export WebP around quality 82, and add them to assets/images with a new filename. For menu photos, also create a 225-pixel thumbnail and register its path and dimensions in imageAssets in index.html. Use the larger image path in menuData; the renderer selects its thumbnail automatically. Preserve the original image in your own photo archive.
+
+External pictures are still supported. To get a new external picture link:
 
 Log in to Postimages.org (Use credentials from Part 1).
 Upload your picture.
-Copy the "Direct link" (it MUST end in .jpg or .png).
+Copy the direct image link (.jpg, .png, and .webp are supported).
 
 Changing the Main Top Banners:
 
 Press Ctrl + F and search for background-image: url
-You will see: url('[https://i.postimg.cc/8PH5RscH/banner.jpg](https://i.postimg.cc/8PH5RscH/banner.jpg)')
-Simply replace the link inside the single quotes.
+Replace the local assets/images/banner-full image path. Also update its matching image preload near the top of index.html so the browser fetches the current banner.
 
 Changing the Photo Carousels (Words of Hope / Reviews):
 
@@ -139,15 +140,14 @@ You will see a list of links wrapped in quotes. Carefully delete an old link ins
 Changing the 3 Home Page Automatic Slideshows:
 Press Ctrl + F and search for HOME TAB CAROUSEL PHOTOS
 You will see three lists (homeMenuImages, homeHopeImages, and homeReviewImages).
-Each list has 7 blank spots (""). Paste your direct image links inside the quotes. The website will automatically combine them into a smooth background video-like slideshow!
+Each list contains its current image path. Add paths inside quotes, separated by commas, to rotate multiple photos. Local images can have a smaller responsive version registered in imageAssets.
 
 
 Changing the logo on the website tab
 
 
 Press Ctrl + F and search for link rel="icon"
-You will see: url('https://i.postimg.cc/NFhGYVSd/logo-png.png')
-Simply replace the link inside the single quotes.
+Replace the favicon PNG path. The apple-touch-icon uses a separate 180-pixel PNG, and sharing metadata uses an absolute URL to the social logo.
 
 💬 PART 6: Updating the Written Customer Reviews
 How to find it: Press Ctrl + F and search for const customReviewsData = [
@@ -262,7 +262,7 @@ Wait a minute for it to test the link, and Google will put you in the priority q
 
 💡 Troubleshooting Cheat Sheet
 The page is completely white/broken! You probably deleted a quote ", a comma ,, or a bracket } by accident. Look at the last thing you edited and check the punctuation. Paste your backup code to fix it.
-A photo isn't loading! Check the Postimages link. It must end in .jpg or .png. If it doesn't, you copied the wrong link from Postimages.
+A photo isn't loading! Confirm its assets/images file exists, the path and capitalization match, and the Pages deployment succeeded. For an external photo, check its direct URL. Failed content images show a local Photo unavailable placeholder; missing dish photos retain their named placeholders.
 The Add to Cart button isn't working! Check the prices in menuData. Did you put a comma in the number? (e.g. 120,000). Remove the comma so it is 120000.
 The website isn't updating after I clicked save! Go back to GitHub and look for the colored dot (See Part 2, Step 4). If it's orange, you just need to wait a few more minutes until it turns green.
 Messages aren't going to the Google Sheet! Did you deploy a "New Version" in Google Apps script? Go back to Part 8, Step 2 and make sure you selected "New Version".
@@ -271,7 +271,7 @@ Messages aren't going to the Google Sheet! Did you deploy a "New Version" in Goo
 
 🧪 Developer verification (October 2026)
 
-The published site still uses only index.html; no build step is required. Node.js 20 or newer is needed only for the regression tests.
+The published site uses index.html and the files in assets/images; no build step is required. Node.js 20 or newer is needed only for the regression tests.
 
 Run `npm ci`, then `npx playwright install chromium`, then `npm test`. The tests serve the local page and intercept external requests: no orders or Words of Hope messages are sent. To test WebKit on a supported machine, install it with `npx playwright install --with-deps webkit` and run `BROWSER=webkit npm test`.
 
