@@ -1,0 +1,10 @@
+{
+  "name": "oonjai-restaurant-web",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/storefront.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

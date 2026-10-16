@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Oon Jai Marketplace</title>
+  <meta name="app-version" content="2026-10-16-safari-1" />
 
   <!-- ========================================== -->
   <!--                SEO & SEARCH LOGO           -->
@@ -44,6 +45,12 @@
       },
       {
         "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+        "opens": "16:00",
+        "closes": "18:30"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
         "dayOfWeek": "Friday",
         "opens": "11:00",
         "closes": "14:00"
@@ -69,7 +76,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 3000;
+      z-index: 1050;
       background: linear-gradient(135deg, #78350f 0%, #b45309 100%);
       border-bottom: 2px solid #f59e0b;
       color: #ffffff;
@@ -92,10 +99,10 @@
       color: #fef3c7;
     }
     .top-nav {
-      top: 52px !important; 
+      top: var(--notice-height, 52px) !important;
     }
     .app-container {
-      padding-top: 130px !important;
+      padding-top: calc(var(--notice-height, 52px) + 78px) !important;
     }
 
     /* --- 1. THEME COLORS & VARIABLES --- */
@@ -116,19 +123,18 @@
     }
     img, button, a, div, span {
       -webkit-tap-highlight-color: transparent !important;
-      outline: none !important;
     }
     
-    html, body { width: 100%; min-height: 100vh; background: var(--bg-dark); color: var(--text-bright); overflow-x: hidden; touch-action: pan-y; }
+    html, body { width: 100%; min-height: 100vh; background: var(--bg-dark); color: var(--text-bright); overflow-x: hidden; touch-action: auto; }
     body { background: var(--bg-gradient); background-attachment: fixed; }
     
     /* HARD SCROLL LOCK FOR MODALS */
     html.modal-open, body.modal-open { 
       overflow: hidden !important; 
       height: 100vh !important; 
-      touch-action: none !important;
       overscroll-behavior: none !important;
     }
+    body.modal-open { position: fixed; left: 0; right: 0; width: 100%; }
 
     /* --- 2. TOP NAVIGATION --- */
     .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(1, 12, 10, 0.95); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; }
@@ -147,7 +153,7 @@
 
     /* --- 2.5. BOTTOM NAVIGATION (MOBILE ONLY) --- */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+      position: fixed; bottom: 0; left: 0; right: 0; height: calc(65px + env(safe-area-inset-bottom));
       background: rgba(1, 12, 10, 0.95); border-top: 1px solid var(--border-color);
       backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center;
       z-index: 1000; padding-bottom: env(safe-area-inset-bottom); /* iOS support */
@@ -235,7 +241,7 @@
     @media (min-width: 768px) {
       .menu-content-layout { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: flex-start; }
       .sidebar-logo { display: block; margin: 0 auto 15px auto; width: 114px; height: 114px; border-radius: 50%; border: 2px solid var(--accent-green); object-fit: cover; }
-      .categories-nav { position: sticky; top: 75px; max-height: calc(100vh - 90px); overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-start; padding: 15px 10px 10px 10px; gap: 8px; }
+      .categories-nav { position: sticky; top: calc(var(--notice-height, 52px) + 75px); max-height: calc(100vh - var(--notice-height, 52px) - 90px); overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-start; padding: 15px 10px 10px 10px; gap: 8px; }
       .nav-header { font-size: 13px; padding: 10px; margin-bottom: 6px; }
       .sidebar-bottom-actions { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px dashed var(--border-color); }
     }
@@ -473,8 +479,8 @@
 
     /* Adjustments for mobile bottom padding & floating cart layout */
     @media (max-width: 767px) { 
-      .app-container { padding-bottom: 85px; } 
-      .floating-cart-btn { bottom: 85px; right: 15px; }
+      .app-container { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+      .floating-cart-btn { bottom: calc(85px + env(safe-area-inset-bottom)); right: 15px; }
     }
 
     /* --- ONBOARDING SWIPE HINT --- */
@@ -493,6 +499,30 @@
       80% { opacity: 1; }
       100% { transform: translateX(-50px); opacity: 0; }
     }
+    :focus-visible { outline: 2px solid var(--accent-green); outline-offset: 3px; }
+    #contentLayout, #mainContent { scroll-margin-top: calc(var(--notice-height, 52px) + 75px); }
+    .gallery-modal-box { width: 100%; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; }
+    .gallery-modal-box > * { flex-shrink: 0; }
+    .gallery-dots { position: static; padding: 10px; }
+    .modal-box, #cartSection { touch-action: pan-y pinch-zoom; }
+    .modal-box, .gallery-modal-box { overscroll-behavior: contain; }
+    .dot { border: 0; padding: 0; }
+    #notifMessage { white-space: pre-line; }
+    #notifMessage:has(#messengerOrderText) { white-space: normal; text-align: left; }
+    .messenger-checkout { display: grid; gap: 12px; }
+    .messenger-checkout .btn-msgr { text-decoration: none; min-height: 44px; }
+    .messenger-help { font-size: 12px; line-height: 1.5; }
+    .messenger-help summary { cursor: pointer; }
+    .messenger-help p { margin-top: 8px; }
+    [aria-disabled="true"] { opacity: 0.6; cursor: wait; }
+    @media (hover: none) and (pointer: coarse) {
+      .form-input { font-size: 16px; }
+      .option-label, .add-btn, .btn-wa, .btn-msgr, .cat-btn { min-height: 44px; }
+      .close-modal, .cart-close-btn, .gallery-close-btn { min-width: 44px; min-height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -500,7 +530,7 @@
   <!-- REMOVE THIS ENTIRE BLOCK WHEN WEBSITE IS FULLY POLISHED -->
   <div class="dev-watermark-banner" role="region" aria-label="Development Notice">
     <div class="dev-watermark-header">⚠️ Notice: Website Under Development</div>
-    <div class="dev-watermark-text">This site is currently in progress but orders can now be process. Thank you for your understanding!</div>
+    <div class="dev-watermark-text">This site is currently in progress but orders can now be processed. Thank you for your understanding!</div>
   </div>
   <!-- END OF REMOVABLE BLOCK -->
 
@@ -508,15 +538,15 @@
   <!--                TOP NAVIGATION              -->
   <!-- ========================================== -->
   <nav class="top-nav" aria-label="Main Navigation">
-    <div class="nav-left" onclick="App.switchMainTab('home')" aria-label="Go to Home Tab">
+    <div class="nav-left" role="button" tabindex="0" onclick="App.switchMainTab('home')" aria-label="Go to Home Tab">
       <img src="https://i.postimg.cc/DZmP1t7Q/logo.jpg" class="nav-small-logo" alt="Oon Jai Logo" />
       <span class="nav-brand">Oon Jai Marketplace</span>
     </div>
     <div class="nav-links" role="tablist">
-      <button class="nav-tab active" data-tab="home" onclick="App.switchMainTab('home')" role="tab" aria-selected="true" aria-controls="tab-home">Home</button>
-      <button class="nav-tab" data-tab="menu" onclick="App.switchMainTab('menu')" role="tab" aria-selected="false" aria-controls="tab-menu">Menu</button>
-      <button class="nav-tab" data-tab="hope" onclick="App.switchMainTab('hope')" role="tab" aria-selected="false" aria-controls="tab-hope">Words of Hope</button>
-      <button class="nav-tab" data-tab="review" onclick="App.switchMainTab('review')" role="tab" aria-selected="false" aria-controls="tab-review">Reviews</button>
+      <button id="nav-home" class="nav-tab active" data-tab="home" onclick="App.switchMainTab('home')" role="tab" aria-selected="true" aria-controls="tab-home">Home</button>
+      <button id="nav-menu" class="nav-tab" data-tab="menu" onclick="App.switchMainTab('menu')" role="tab" aria-selected="false" aria-controls="tab-menu">Menu</button>
+      <button id="nav-hope" class="nav-tab" data-tab="hope" onclick="App.switchMainTab('hope')" role="tab" aria-selected="false" aria-controls="tab-hope">Words of Hope</button>
+      <button id="nav-review" class="nav-tab" data-tab="review" onclick="App.switchMainTab('review')" role="tab" aria-selected="false" aria-controls="tab-review">Reviews</button>
     </div>
   </nav>
 
@@ -524,19 +554,19 @@
   <!--           BOTTOM NAVIGATION (MOBILE)       -->
   <!-- ========================================== -->
   <nav class="bottom-nav" role="tablist" aria-label="Mobile Navigation">
-    <button class="bottom-nav-tab active" data-tab="home" onclick="App.switchMainTab('home')" role="tab" aria-selected="true">
+    <button aria-controls="tab-home" class="bottom-nav-tab active" data-tab="home" onclick="App.switchMainTab('home')" role="tab" aria-selected="true">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       <span>Home</span>
     </button>
-    <button class="bottom-nav-tab" data-tab="menu" onclick="App.switchMainTab('menu')" role="tab" aria-selected="false">
+    <button aria-controls="tab-menu" class="bottom-nav-tab" data-tab="menu" onclick="App.switchMainTab('menu')" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
       <span>Menu</span>
     </button>
-    <button class="bottom-nav-tab" data-tab="hope" onclick="App.switchMainTab('hope')" role="tab" aria-selected="false">
+    <button aria-controls="tab-hope" class="bottom-nav-tab" data-tab="hope" onclick="App.switchMainTab('hope')" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
       <span>Hope</span>
     </button>
-    <button class="bottom-nav-tab" data-tab="review" onclick="App.switchMainTab('review')" role="tab" aria-selected="false">
+    <button aria-controls="tab-review" class="bottom-nav-tab" data-tab="review" onclick="App.switchMainTab('review')" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
       <span>Reviews</span>
     </button>
@@ -585,15 +615,15 @@
         </div>
         
         <div class="home-cards-grid">
-          <div class="home-card" onclick="App.switchMainTab('menu')" aria-label="Go to Menu">
+          <div class="home-card" role="button" tabindex="0" onclick="App.switchMainTab('menu')" aria-label="Go to Menu">
             <div class="home-card-slider" id="homeSliderMenu"></div>
             <div class="home-card-btn">Explore Menu</div>
           </div>
-          <div class="home-card" onclick="App.switchMainTab('hope')" aria-label="Go to Words of Hope">
+          <div class="home-card" role="button" tabindex="0" onclick="App.switchMainTab('hope')" aria-label="Go to Words of Hope">
             <div class="home-card-slider" id="homeSliderHope"></div>
             <div class="home-card-btn">Words of Hope</div>
           </div>
-          <div class="home-card" onclick="App.switchMainTab('review')" aria-label="Go to Reviews">
+          <div class="home-card" role="button" tabindex="0" onclick="App.switchMainTab('review')" aria-label="Go to Reviews">
             <div class="home-card-slider" id="homeSliderReview"></div>
             <div class="home-card-btn">Customer Reviews</div>
           </div>
@@ -657,7 +687,7 @@
             
             <!-- CART SECTION: Wraps as a modal on mobile, sits inline on desktop -->
             <div id="cartModalWrapper" onclick="if(event.target === this && window.innerWidth < 768) App.closeCartModal()">
-              <div class="cart-summary" id="cartSection" aria-live="polite">
+              <div class="cart-summary" id="cartSection" aria-live="polite" aria-label="Your Order Basket">
                 <div class="cart-title">
                   <div style="display: flex; align-items: center; gap: 12px;">
                     <span class="cart-title-text">Your Order Basket</span>
@@ -670,8 +700,8 @@
                 </div>
                 
                 <div class="order-options" id="orderOptionsBox">
-                  <label><input type="radio" name="orderType" value="Dine-In" onchange="App.clearOrderTypeError()"> Dine-In</label>
-                  <label><input type="radio" name="orderType" value="Pick-Up" onchange="App.clearOrderTypeError()"> Pick-Up</label>
+                  <label><input type="radio" name="orderType" value="Dine-In" onchange="App.saveCart()"> Dine-In</label>
+                  <label><input type="radio" name="orderType" value="Pick-Up" onchange="App.saveCart()"> Pick-Up</label>
                 </div>
                 
                 <div class="payment-note"><strong>Note:</strong> A QR code will be sent to you for payment before your order is processed. This helps us verify and prevent fake orders. Thank you!</div>
@@ -724,7 +754,7 @@
               <div class="carousel-track" id="hopeCarouselTrack" aria-label="Image gallery"></div>
               <button class="carousel-btn next" onclick="App.scrollCarousel('hopeCarouselTrack', 1)" aria-label="Next image">&#10095;</button>
             </div>
-            <div class="carousel-dots" id="hopeCarouselDots" aria-hidden="true"></div>
+            <div class="carousel-dots" id="hopeCarouselDots" aria-label="Words of Hope images"></div>
           </div>
 
           <div class="gallery-col" style="justify-content: flex-start;">
@@ -801,7 +831,7 @@
               <div class="carousel-track" id="reviewCarouselTrack" aria-label="Review image gallery"></div>
               <button class="carousel-btn next" onclick="App.scrollCarousel('reviewCarouselTrack', 1)" aria-label="Next image">&#10095;</button>
             </div>
-            <div class="carousel-dots" id="reviewCarouselDots" aria-hidden="true"></div>
+            <div class="carousel-dots" id="reviewCarouselDots" aria-label="Guest photos"></div>
           </div>
 
           <div class="gallery-col">
@@ -909,7 +939,7 @@
       <div class="carousel-container square-carousel">
         <div class="carousel-track" id="galleryCarouselTrack"></div>
       </div>
-      <div class="carousel-dots gallery-dots" id="galleryCarouselDots" aria-hidden="true"></div>
+      <div class="carousel-dots gallery-dots" id="galleryCarouselDots" aria-label="Gallery images"></div>
       
       <div class="gallery-order-bar">
         <span class="gallery-price-tag" id="galleryPriceTag">0 Kip</span>
@@ -924,6 +954,16 @@ const App = (function() {
   
   // --- STATE & DATA ---
   const carouselIntervals = {};
+  const carouselSizes = {};
+  const modalStack = [];
+  const storageFallback = new Map();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let pendingConfirmation = null;
+  let customSubmitPending = false;
+  let formSubmitting = false;
+  let deviceToken = '';
+  let cartHome = null;
+  let lockedScrollY = 0;
   let cart = [];
   let currentActiveCustomItem = null;
   let editingCartIndex = null;
@@ -1031,43 +1071,124 @@ const App = (function() {
   const homeReviewImages = ["https://i.postimg.cc/sgyCjJJM/Home-3.png"];
 
   // --- INTERNAL UTILITIES ---
-  function formatKip(amount) { return amount.toLocaleString() + ' Kip'; }
+  function formatKip(amount) { return amount.toLocaleString('en-US') + ' Kip'; }
   
-  function setScrollLock(isLocked) {
-    if (isLocked) {
-      document.documentElement.classList.add('modal-open');
-      document.body.classList.add('modal-open');
-    } else {
-      // Check if any other modal is still active before unlocking
-      const isCartModalOpen = window.innerWidth < 768 && document.getElementById('cartModalWrapper') && document.getElementById('cartModalWrapper').classList.contains('active');
-      const isOtherModalOpen = document.querySelector('.modal-overlay.active') !== null;
-      if (!isCartModalOpen && !isOtherModalOpen) {
-        document.documentElement.classList.remove('modal-open');
-        document.body.classList.remove('modal-open');
-      }
+  function readStorage(kind, key) {
+    try { return window[kind].getItem(key) ?? storageFallback.get(key) ?? null; }
+    catch { return storageFallback.get(key) ?? null; }
+  }
+
+  function writeStorage(kind, key, value) {
+    storageFallback.set(key, value);
+    try { window[kind].setItem(key, value); } catch { /* Keep this visit usable when storage is blocked. */ }
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+  }
+
+  function customDetails(item, choices) {
+    const extra = Math.max(0, choices.veggies.length - item.maxVeggies) + Math.max(0, choices.proteins.length - item.maxProteins);
+    const parts = [];
+    if (item.needsWellnessChoice) parts.push(`Drink: ${choices.drink}`);
+    if (choices.sauces.length) parts.push(`Sauces: ${choices.sauces.join(', ')}`);
+    if (choices.veggies.length) parts.push(`Veggies: ${choices.veggies.join(', ')}`);
+    if (choices.proteins.length) parts.push(`Proteins: ${choices.proteins.join(', ')}`);
+    if (extra) parts.push(`Add-ons: +${extra} item(s) (+${formatKip(extra * EXTRA_ADDON_PRICE)})`);
+    return { price: item.price + extra * EXTRA_ADDON_PRICE, subtext: parts.join(' | ') };
+  }
+
+  function saveCart() {
+    writeStorage('sessionStorage', 'oonjai_cart_v1', JSON.stringify({
+      savedAt: Date.now(), items: cart,
+      orderType: document.querySelector('[name="orderType"]:checked')?.value || ''
+    }));
+  }
+
+  function restoreCart() {
+    try {
+      const saved = JSON.parse(readStorage('sessionStorage', 'oonjai_cart_v1') || 'null');
+      if (!saved || !Number.isFinite(saved.savedAt) || Date.now() - saved.savedAt > 86400000 || !Array.isArray(saved.items)) return;
+      cart = saved.items.slice(0, 200).flatMap(entry => {
+        if (!entry || !Number.isSafeInteger(entry.qty) || entry.qty < 1 || entry.qty > 9999) return [];
+        if (!Object.hasOwn(menuData, entry.category)) return [];
+        const item = menuData[entry.category].find(item => item.id === entry.id);
+        if (!item) return [];
+        const row = { id: item.id, name: item.name, price: item.price, subtext: '', qty: entry.qty, isCustom: !!item.isCustom, category: entry.category };
+        if (item.isCustom) {
+          const choices = entry.choices;
+          if (!choices) return [];
+          const lists = { sauces: commonChoices.sauces, veggies: commonChoices.veggies, proteins: commonChoices[item.specificProteins || 'proteins'] };
+          for (const [key, allowed] of Object.entries(lists)) {
+            if (!Array.isArray(choices[key]) || choices[key].some(value => !allowed.includes(value)) || new Set(choices[key]).size !== choices[key].length) return [];
+          }
+          if (choices.sauces.length > item.maxSauces || !(choices.sauces.length + choices.veggies.length + choices.proteins.length)) return [];
+          if (item.needsWellnessChoice && !commonChoices.wellnessDrinks.includes(choices.drink)) return [];
+          row.choices = choices;
+          Object.assign(row, customDetails(item, choices));
+        }
+        return [row];
+      });
+      document.querySelectorAll('[name="orderType"]').forEach(radio => radio.checked = radio.value === saved.orderType);
+    } catch { cart = []; }
+  }
+
+  function setScrollLock() {
+    const top = modalStack.filter(modal => modal.classList.contains('active')).at(-1);
+    const wasLocked = document.body.classList.contains('modal-open');
+    if (top && !wasLocked) {
+      lockedScrollY = window.scrollY;
+      document.body.style.top = `-${lockedScrollY}px`;
+    }
+    document.documentElement.classList.toggle('modal-open', !!top);
+    document.body.classList.toggle('modal-open', !!top);
+    for (const child of document.body.children) {
+      if (child.matches('script, style')) continue;
+      child.inert = !!top && child !== top;
+    }
+    if (!top && wasLocked) {
+      document.body.style.top = '';
+      window.scrollTo(0, lockedScrollY);
     }
   }
-  
+
   function trapFocus(modalEl) {
-    const focusableEls = modalEl.querySelectorAll('a[href], button, textarea, input, select');
-    if(focusableEls.length === 0) return;
-    const first = focusableEls[0], last = focusableEls[focusableEls.length - 1];
-
-    if (modalEl._keyListener) {
-      modalEl.removeEventListener('keydown', modalEl._keyListener);
+    if (!modalStack.includes(modalEl)) {
+      modalEl._returnFocus = document.activeElement;
+      modalStack.push(modalEl);
     }
-
-    modalEl._keyListener = function(e) {
+    setScrollLock();
+    const focusable = () => [...modalEl.querySelectorAll('a[href], button, textarea, input, select, [tabindex="0"]')]
+      .filter(el => !el.disabled && el.getClientRects().length && !el.closest('[inert]'));
+    if (modalEl._keyListener) modalEl.removeEventListener('keydown', modalEl._keyListener);
+    modalEl._keyListener = e => {
       if (e.key !== 'Tab') return;
-      if (e.shiftKey) { if (document.activeElement === first) { last.focus(); e.preventDefault(); } } 
-      else { if (document.activeElement === last) { first.focus(); e.preventDefault(); } }
+      const els = focusable(), first = els[0], last = els.at(-1);
+      if (!first) { e.preventDefault(); return; }
+      if (e.shiftKey && (document.activeElement === first || !modalEl.contains(document.activeElement))) {
+        last.focus(); e.preventDefault();
+      } else if (!e.shiftKey && (document.activeElement === last || !modalEl.contains(document.activeElement))) {
+        first.focus(); e.preventDefault();
+      }
     };
-
     modalEl.addEventListener('keydown', modalEl._keyListener);
-    setTimeout(() => first.focus(), 50);
+    focusable()[0]?.focus({ preventScroll: true });
+  }
+
+  function releaseModal(modalEl) {
+    modalEl.classList.remove('active');
+    const index = modalStack.indexOf(modalEl);
+    if (index >= 0) modalStack.splice(index, 1);
+    modalEl.removeEventListener('keydown', modalEl._keyListener);
+    setScrollLock();
+    const previous = modalEl._returnFocus;
+    if (previous?.isConnected && previous.getClientRects().length && !previous.closest('[inert]')) previous.focus({ preventScroll: true });
+    else if (modalStack.length) trapFocus(modalStack.at(-1));
+    else document.getElementById('floatingCartBtn').focus({ preventScroll: true });
   }
 
   function animateFlyToCart(originElement) {
+    if (reducedMotion.matches) return;
     const cartBtn = document.getElementById('floatingCartBtn');
     if (!cartBtn) return;
 
@@ -1119,7 +1240,7 @@ const App = (function() {
     }, {passive: true});
 
     appRoot.addEventListener('touchend', e => {
-      if (e.target.closest('.carousel-container') || e.target.closest('.home-card-slider') || e.target.closest('.modal-overlay.active') || e.target.closest('#cartModalWrapper.active')) return;
+      if (e.target.closest('input, textarea, select, button, a, .categories-nav') || e.target.closest('.carousel-container') || e.target.closest('.home-card-slider') || e.target.closest('.modal-overlay.active') || e.target.closest('#cartModalWrapper.active')) return;
       
       touchEndX = e.changedTouches[0].screenX;
       touchEndY = e.changedTouches[0].screenY;
@@ -1151,11 +1272,11 @@ const App = (function() {
     if (!hint) return;
     if (window.innerWidth >= 768) return;
     
-    if (!localStorage.getItem('oonjai_swipe_hint_shown')) {
+    if (!readStorage('localStorage', 'oonjai_swipe_hint_shown')) {
       hint.classList.remove('hidden');
       setTimeout(() => {
         hint.classList.add('hidden');
-        localStorage.setItem('oonjai_swipe_hint_shown', 'true');
+        writeStorage('localStorage', 'oonjai_swipe_hint_shown', 'true');
       }, 3500);
     }
   }
@@ -1190,71 +1311,45 @@ const App = (function() {
 
   function startAutoPlay(trackId, intervalMs) {
     clearInterval(carouselIntervals[trackId]);
+    const track = document.getElementById(trackId);
+    if (!track || carouselSizes[trackId] < 2 || document.hidden || reducedMotion.matches || !track.clientWidth) return;
     carouselIntervals[trackId] = setInterval(() => {
-      const track = document.getElementById(trackId);
-      if(!track || track.clientWidth === 0) return; 
-      track.scrollBy({ left: track.clientWidth, behavior: 'smooth' }); 
+      const next = (Math.round(track.scrollLeft / track.clientWidth) + 1) % carouselSizes[trackId];
+      track.scrollTo({ left: next * track.clientWidth, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     }, intervalMs);
+  }
+
+  function syncAnimations() {
+    Object.keys(carouselSizes).forEach(id => startAutoPlay(id, 4000));
+    clearInterval(verticalScrollInterval);
+    const container = document.getElementById('verticalReviewsCarousel');
+    if (document.hidden || reducedMotion.matches || !container?.clientHeight) return;
+    verticalScrollInterval = setInterval(() => {
+      if (!isVerticalHoveredOrDragged) {
+        container.scrollTop += 1;
+        if (Math.ceil(container.scrollTop + container.clientHeight) >= container.scrollHeight) container.scrollTop = 0;
+      }
+    }, 35);
   }
 
   function setupCarousel(trackId, dotsId, imagesArray) {
     const track = document.getElementById(trackId), dots = document.getElementById(dotsId);
-    const validImages = (imagesArray || []).filter(link => link && link.trim() !== "");
-    if (validImages.length === 0) return;
-
-    if (carouselIntervals[trackId]) clearInterval(carouselIntervals[trackId]);
-
-    if (validImages.length === 1) {
-      track.innerHTML = `<img src="${validImages[0]}" class="carousel-img" draggable="false" loading="eager"/>`;
-      dots.innerHTML = '';
-      track.onscroll = null;
-      return;
-    }
-
-    let html = '', dotsHtml = '';
-    html += `<img src="${validImages[validImages.length - 1]}" class="carousel-img clone" draggable="false" loading="eager"/>`;
-    validImages.forEach((imgLink, i) => {
-      html += `<img src="${imgLink}" class="carousel-img" draggable="false" loading="lazy"/>`;
-      dotsHtml += `<span class="dot" onclick="App.goToSlide('${trackId}', ${i + 1})"></span>`;
-    });
-    html += `<img src="${validImages[0]}" class="carousel-img clone" draggable="false" loading="lazy"/>`;
-    
-    track.innerHTML = html; 
-    dots.innerHTML = dotsHtml;
-    
-    track.classList.add('no-smooth');
-    track.scrollLeft = track.clientWidth;
-    void track.offsetWidth;
-    track.classList.remove('no-smooth');
-
+    const validImages = (imagesArray || []).filter(link => typeof link === 'string' && link.trim());
+    clearInterval(carouselIntervals[trackId]);
+    carouselSizes[trackId] = validImages.length;
+    track.innerHTML = validImages.map((src, index) => `<img src="${escapeHtml(src)}" alt="${trackId === 'hopeCarouselTrack' ? 'Words of Hope' : trackId === 'reviewCarouselTrack' ? 'Restaurant guest photo' : 'Menu item photo'} ${index + 1}" class="carousel-img" draggable="false" loading="lazy">`).join('');
+    dots.innerHTML = validImages.length > 1 ? validImages.map((_, index) => `<button class="dot${index === 0 ? ' active' : ''}" aria-label="Show image ${index + 1}" onclick="App.goToSlide('${trackId}', ${index})"></button>`).join('') : '';
+    track.scrollLeft = 0;
     track.onscroll = () => {
-      if (track.clientWidth === 0) return;
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      
-      if (track.scrollLeft <= 1) {
-        track.classList.add('no-smooth');
-        track.scrollLeft = maxScroll - track.clientWidth; 
-        track.classList.remove('no-smooth');
-      } 
-      else if (track.scrollLeft >= maxScroll - 1) { 
-        track.classList.add('no-smooth');
-        track.scrollLeft = track.clientWidth; 
-        track.classList.remove('no-smooth');
-      }
-
-      let index = Math.round(track.scrollLeft / track.clientWidth) - 1;
-      if (index < 0) index = validImages.length - 1;
-      if (index >= validImages.length) index = 0;
-      
-      const dotElements = document.querySelectorAll(`#${dotsId} .dot`);
-      if(dotElements.length > 0) {
-        dotElements.forEach((d, i) => d.classList.toggle('active', i === index));
-      }
+      if (!track.clientWidth) return;
+      const index = Math.round(track.scrollLeft / track.clientWidth);
+      dots.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+        dot.setAttribute('aria-current', String(i === index));
+      });
     };
-
     makeScrollableDraggable(track, trackId, false);
-    if (document.querySelector(`#${dotsId} .dot`)) document.querySelector(`#${dotsId} .dot`).classList.add('active');
-    startAutoPlay(trackId, 4000); 
+    startAutoPlay(trackId, 4000);
   }
 
   function initVerticalReviewsCarousel() {
@@ -1275,13 +1370,7 @@ const App = (function() {
     container.addEventListener('touchstart', () => isVerticalHoveredOrDragged = true, {passive: true});
     container.addEventListener('touchend', () => setTimeout(() => isVerticalHoveredOrDragged = false, 1500), {passive: true});
 
-    clearInterval(verticalScrollInterval);
-    verticalScrollInterval = setInterval(() => {
-      if (!isVerticalHoveredOrDragged) {
-        container.scrollTop += 1;
-        if (Math.ceil(container.scrollTop + container.clientHeight) >= container.scrollHeight) container.scrollTop = 0;
-      }
-    }, 35);
+    syncAnimations();
   }
 
   function initHomeSliders() {
@@ -1296,6 +1385,7 @@ const App = (function() {
         let currentIndex = 0;
         const imgs = container.querySelectorAll('img');
         setTimeout(() => setInterval(() => {
+            if (document.hidden || reducedMotion.matches || !container.clientWidth) return;
             imgs[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % validImages.length;
             imgs[currentIndex].classList.add('active');
@@ -1310,35 +1400,63 @@ const App = (function() {
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    const savedTab = sessionStorage.getItem('oonjai_active_tab') || window.location.hash.replace('#', '');
-    if (savedTab && mainTabs.includes(savedTab)) {
-      App.switchMainTab(savedTab);
-    }
+    cartHome = document.createComment('Cart position in the menu');
+    document.getElementById('cartModalWrapper').before(cartHome);
+    restoreCart();
+    const hashTab = window.location.hash.slice(1);
+    const savedTab = mainTabs.includes(hashTab) ? hashTab : readStorage('sessionStorage', 'oonjai_active_tab');
+    App.switchMainTab(mainTabs.includes(savedTab) ? savedTab : 'home', false);
 
     setupCarousel('hopeCarouselTrack', 'hopeCarouselDots', hopeImagesData);
     setupCarousel('reviewCarouselTrack', 'reviewCarouselDots', googleReviewPhotosData);
     initVerticalReviewsCarousel();
     initHomeSliders();
-    renderProductsGrid();
+    App._reRenderStore();
     setupForm();
     setupTabSwiping();
     initSwipeHint();
+    document.querySelectorAll('.nav-left, .home-card').forEach(el => el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+    }));
+    document.querySelectorAll('[role="tablist"]').forEach(list => list.addEventListener('keydown', e => {
+      const tabs = [...list.querySelectorAll('[role="tab"]')];
+      const index = tabs.indexOf(document.activeElement);
+      if (index < 0) return;
+      let next;
+      if (e.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      else return;
+      e.preventDefault(); tabs[next].click(); tabs[next].focus();
+    }));
+    const notice = document.querySelector('.dev-watermark-banner');
+    if (notice) new ResizeObserver(() => document.documentElement.style.setProperty('--notice-height', notice.offsetHeight + 'px')).observe(notice);
   });
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === 'hidden') {
-      const modal = document.getElementById('notificationModal');
-      if (modal && modal.classList.contains('active')) {
-        App.closeNotification();
-      }
-    }
+  document.addEventListener('visibilitychange', syncAnimations);
+  window.addEventListener('pagehide', saveCart);
+  window.addEventListener('hashchange', () => App.switchMainTab(mainTabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home', false));
+  window.addEventListener('popstate', () => App.switchMainTab(mainTabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home', false));
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && document.getElementById('cartModalWrapper').classList.contains('active')) App.closeCartModal();
+    syncAnimations();
+  });
+  reducedMotion.addEventListener('change', syncAnimations);
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const top = modalStack.at(-1);
+    if (!top) return;
+    e.preventDefault();
+    const close = { notificationModal: 'closeNotification', customModal: 'closeCustomModal', galleryModal: 'closeGallery', cartModalWrapper: 'closeCartModal' };
+    App[close[top.id]]();
   });
 
   function setupForm() {
-    let deviceToken = localStorage.getItem("oonjai_user_id");
+    deviceToken = readStorage("localStorage", "oonjai_user_id");
     if (!deviceToken) {
       deviceToken = "DEV-" + Math.random().toString(36).substring(2, 11) + Date.now();
-      localStorage.setItem("oonjai_user_id", deviceToken);
+      writeStorage("localStorage", "oonjai_user_id", deviceToken);
     }
     document.getElementById("device_token").value = deviceToken;
 
@@ -1352,8 +1470,9 @@ const App = (function() {
       wordCounter.style.color = (count >= 20 && count <= 30) ? "#4ade80" : "#64748b";
     });
 
-    document.getElementById('customForm').addEventListener('submit', function(e) {
+    document.getElementById('customForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      if (formSubmitting) return;
       const status = document.getElementById('statusMsg'), submitBtn = document.getElementById('submitBtn');
       const wordCount = getWordCount(messageInput.value);
 
@@ -1364,20 +1483,24 @@ const App = (function() {
       }
       status.style.color = "#94a3b8"; status.innerText = "Submitting..."; submitBtn.disabled = true;
 
-      fetch(WEB_APP_URL, { method: 'POST', body: new FormData(this), mode: 'no-cors' })
-      .then(() => {
-        status.style.color = "#4ade80"; 
-        status.innerText = "✓ Sent successfully!";
-        App.triggerAlert("Thank you for sharing your message! 🌱\n\nYour word of hope has been received and may bring joy to someone when they need it most.", "Message Sent! 💌");
-        App.clearForm(); 
+      formSubmitting = true;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+      try {
+        await fetch(WEB_APP_URL, { method: 'POST', body: new FormData(this), mode: 'no-cors', signal: controller.signal });
+        // Apps Script returns an opaque response. It does not prove that the sheet saved the message.
+        status.style.color = '#fbbf24';
+        status.innerText = 'Message sent for delivery, but we cannot confirm receipt. Your draft is kept here. Please avoid resending immediately.';
+      } catch (error) {
+        status.style.color = '#f87171';
+        status.innerText = error.name === 'AbortError'
+          ? 'Delivery timed out. Your message may have arrived; we cannot confirm receipt. Your draft is kept here.'
+          : 'Could not confirm delivery. Your draft is kept here. Check your connection before trying again.';
+      } finally {
+        clearTimeout(timeout);
+        formSubmitting = false;
         submitBtn.disabled = false;
-      })
-      .catch(() => {
-        status.style.color = "#f87171"; 
-        status.innerText = "Error submitting message. Please try again.";
-        App.triggerAlert("Something went wrong while submitting your message. Please check your connection and try again.", "Error");
-        submitBtn.disabled = false;
-      });
+      }
     });
   }
 
@@ -1392,7 +1515,7 @@ const App = (function() {
                         : `<button class="add-btn" onclick="App.addMenuItemToCart('${currentCategory}', '${item.id}', this)">Add +</button>`;
       
       const thumbnailSrc = item.images && item.images.length > 0 ? item.images[0] : defaultDummyImages[0];
-      const imageHtml = `<img src="${thumbnailSrc}" class="product-image" alt="${item.name}" loading="lazy" onclick="App.openGallery('${currentCategory}', '${item.id}')" aria-label="View images and details for ${item.name}">`;
+      const imageHtml = `<img src="${thumbnailSrc}" class="product-image" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }" alt="${escapeHtml(item.name)}" loading="lazy" onclick="App.openGallery('${currentCategory}', '${item.id}')" aria-label="View images and details for ${item.name}">`;
 
       card.innerHTML = `
         <div style="display: flex; gap: 12px; align-items: center; width: 100%;">
@@ -1414,8 +1537,11 @@ const App = (function() {
   // --- PUBLIC API / METHODS ---
   return {
     startAutoPlay,
+    saveCart,
     
-    switchMainTab: function(tabId) {
+    switchMainTab: function(tabId, updateHistory = true) {
+      if (!mainTabs.includes(tabId)) return;
+      if (document.getElementById('cartModalWrapper').classList.contains('active')) this.closeCartModal();
       // Hide all standard panes
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       document.getElementById('tab-' + tabId).classList.add('active');
@@ -1440,10 +1566,12 @@ const App = (function() {
         btn.setAttribute('aria-selected', 'true');
       });
 
-      sessionStorage.setItem('oonjai_active_tab', tabId);
-      history.replaceState(null, null, '#' + tabId);
+      writeStorage('sessionStorage', 'oonjai_active_tab', tabId);
+      document.querySelectorAll('[role="tab"]').forEach(tab => tab.tabIndex = tab.dataset.tab === tabId ? 0 : -1);
+      if (updateHistory && location.hash !== '#' + tabId) history.pushState(null, '', '#' + tabId);
+      syncAnimations();
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     },
 
     scrollToBasket: function() {
@@ -1451,8 +1579,12 @@ const App = (function() {
         // Mobile: Show as elegant popup modal
         const wrapper = document.getElementById('cartModalWrapper');
         if (wrapper) {
+          document.body.appendChild(wrapper);
+          wrapper.setAttribute('role', 'dialog');
+          wrapper.setAttribute('aria-modal', 'true');
+          wrapper.setAttribute('aria-label', 'Your Order Basket');
           wrapper.classList.add('active');
-          setScrollLock(true);
+          trapFocus(wrapper);
         }
       } else {
         // Desktop: Keep current inline design, scroll to basket
@@ -1469,7 +1601,7 @@ const App = (function() {
     executeScrollToCart: function() {
       const cartSection = document.getElementById('cartSection');
       if (cartSection) {
-        cartSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        cartSection.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
         cartSection.classList.remove('basket-highlight');
         void cartSection.offsetWidth;
         cartSection.classList.add('basket-highlight');
@@ -1483,32 +1615,38 @@ const App = (function() {
     closeCartModal: function() {
       const wrapper = document.getElementById('cartModalWrapper');
       if (wrapper) {
-        wrapper.classList.remove('active');
-        setScrollLock(false);
+        releaseModal(wrapper);
+        wrapper.removeAttribute('role');
+        wrapper.removeAttribute('aria-modal');
+        if (cartHome) cartHome.after(wrapper);
       }
     },
 
     scrollCarousel: function(trackId, dir) {
       const track = document.getElementById(trackId);
-      track.scrollBy({ left: track.clientWidth * dir, behavior: 'smooth' });
+      const count = carouselSizes[trackId] || 1;
+      const next = (Math.round(track.scrollLeft / track.clientWidth) + dir + count) % count;
+      track.scrollTo({ left: track.clientWidth * next, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
       startAutoPlay(trackId, 4000); 
     },
     
     goToSlide: function(trackId, slideIndex) {
       const track = document.getElementById(trackId);
-      track.scrollTo({ left: track.clientWidth * slideIndex, behavior: 'smooth' });
+      track.scrollTo({ left: track.clientWidth * slideIndex, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
       startAutoPlay(trackId, 4000);
     },
 
     clearForm: function() {
+      if (formSubmitting) return;
       document.getElementById('customForm').reset();
-      document.getElementById("device_token").value = localStorage.getItem("oonjai_user_id");
+      document.getElementById("device_token").value = deviceToken;
       document.getElementById('statusMsg').innerText = "";
       const wc = document.getElementById('wordCounter');
       wc.innerText = "0 / 20-30 words"; wc.style.color = "#64748b";
     },
 
     switchCategory: function(catKey) {
+      if (!Object.hasOwn(menuData, catKey)) return;
       currentCategory = catKey;
       document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.category === catKey));
       const titleMap = { burgers: 'Burgers', sandwiches: 'Sandwiches', texmex: 'Tex-Mexican', pasta: 'Pasta', bowl: 'Build Your Bowl', smoothies: 'Smoothies', refreshers: 'Refreshers', wellness: 'Wellness Drinks' };
@@ -1516,12 +1654,12 @@ const App = (function() {
       
       renderProductsGrid();
       const scrollTarget = window.innerWidth < 768 ? document.getElementById('contentLayout') : document.getElementById('mainContent');
-      if (scrollTarget && typeof scrollTarget.scrollIntoView === 'function') scrollTarget.scrollIntoView({behavior: 'smooth', block: 'start'});
+      if (scrollTarget && typeof scrollTarget.scrollIntoView === 'function') scrollTarget.scrollIntoView({behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start'});
     },
 
     addMenuItemToCart: function(category, itemId, eventElement = null) {
-      const item = menuData[category].find(i => i.id === itemId);
-      if (item) { 
+      const item = menuData[category]?.find(i => i.id === itemId);
+      if (item && !item.isCustom) {
         const existing = cart.find(c => c.id === item.id && !c.isCustom);
         if (existing) {
           existing.qty += 1;
@@ -1536,6 +1674,7 @@ const App = (function() {
 
     incrementCartItem: function(index) {
       const item = cart[index];
+      if (!item) return;
       if (item.isCustom) {
         this.openCustomModal(item.category, item.id);
       } else {
@@ -1545,6 +1684,7 @@ const App = (function() {
     },
 
     decrementCartItem: function(index) {
+      if (!cart[index]) return;
       if (cart[index].qty > 1) {
         cart[index].qty -= 1;
       } else {
@@ -1560,6 +1700,7 @@ const App = (function() {
     },
     
     _reRenderStore: function() {
+      saveCart();
       renderProductsGrid();
       const container = document.getElementById('cartItems'), countEl = document.getElementById('cartCount'), totalEl = document.getElementById('totalPrice'), floatingBadge = document.getElementById('floatingCartBadge');
       
@@ -1599,7 +1740,7 @@ const App = (function() {
     },
 
     openCustomModal: function(catKey, itemId, editIndex = null) {
-      const item = menuData[catKey].find(i => i.id === itemId);
+      const item = menuData[catKey]?.find(i => i.id === itemId);
       if (!item) return;
 
       editingCartIndex = editIndex;
@@ -1626,58 +1767,36 @@ const App = (function() {
 
       document.getElementById('modalRulesInfo').innerText = `Included: Up to ${item.maxSauces} Sauce(s), ${item.maxVeggies} Veggie(s), and ${item.maxProteins} Protein(s).\n(Extra Veggies or Proteins: +7,000 Kip each)`;
       
-      const genChoices = (arr, name) => arr.map(val => `<label class="option-label"><input type="checkbox" name="${name}" value="${val}" onchange="App.enforceLimit(this, '${name}', currentActiveCustomItem.max${name.replace('cust', '')}s)"> ${val}</label>`).join('');
+      const genChoices = (arr, name) => arr.map(val => `<label class="option-label"><input type="checkbox" name="${name}" value="${val}" onchange="App.enforceLimit(this, '${name}')"> ${val}</label>`).join('');
       document.getElementById('saucesContainer').innerHTML = genChoices(commonChoices.sauces, 'custSauce');
       document.getElementById('veggiesContainer').innerHTML = genChoices(commonChoices.veggies, 'custVeggie');
       document.getElementById('proteinsContainer').innerHTML = genChoices(item.specificProteins ? commonChoices[item.specificProteins] : commonChoices.proteins, 'custProtein');
       
       if (editingCartIndex !== null) {
         const existingItem = cart[editingCartIndex];
-        if (existingItem && existingItem.subtext) {
-          const parts = existingItem.subtext.split(' | ');
-          parts.forEach(part => {
-            if (part.startsWith('Drink: ')) {
-              const drinkVal = part.replace('Drink: ', '').trim();
-              const radio = document.querySelector(`input[name="custWellness"][value="${drinkVal}"]`);
-              if (radio) radio.checked = true;
-            } else if (part.startsWith('Sauces: ')) {
-              const saucesArr = part.replace('Sauces: ', '').split(', ').map(s => s.trim());
-              saucesArr.forEach(s => {
-                const cb = document.querySelector(`input[name="custSauce"][value="${s}"]`);
-                if (cb) cb.checked = true;
-              });
-            } else if (part.startsWith('Veggies: ')) {
-              const vegArr = part.replace('Veggies: ', '').split(', ').map(s => s.trim());
-              vegArr.forEach(v => {
-                const cb = document.querySelector(`input[name="custVeggie"][value="${v}"]`);
-                if (cb) cb.checked = true;
-              });
-            } else if (part.startsWith('Proteins: ')) {
-              const protArr = part.replace('Proteins: ', '').split(', ').map(p => p.trim());
-              protArr.forEach(p => {
-                const cb = document.querySelector(`input[name="custProtein"][value="${p}"]`);
-                if (cb) cb.checked = true;
-              });
-            }
-          });
+        if (existingItem?.choices) {
+          const groups = { custSauce: 'sauces', custVeggie: 'veggies', custProtein: 'proteins' };
+          Object.entries(groups).forEach(([name, key]) => document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+            input.checked = existingItem.choices[key].includes(input.value);
+          }));
+          document.querySelectorAll('[name="custWellness"]').forEach(input => input.checked = input.value === existingItem.choices.drink);
         }
       }
 
       const modal = document.getElementById('customModal');
-      setScrollLock(true);
       modal.classList.add('active');
       trapFocus(modal);
     },
 
     closeCustomModal: function() { 
-      document.getElementById('customModal').classList.remove('active'); 
-      setScrollLock(false);
+      if (pendingConfirmation) this.closeNotification();
+      releaseModal(document.getElementById('customModal'));
       currentActiveCustomItem = null; 
       editingCartIndex = null;
     },
     
     openGallery: function(catKey, itemId) {
-      const item = menuData[catKey].find(i => i.id === itemId);
+      const item = menuData[catKey]?.find(i => i.id === itemId);
       if (!item) return;
       
       document.getElementById('galleryTitle').innerText = item.name;
@@ -1695,17 +1814,17 @@ const App = (function() {
       setupCarousel('galleryCarouselTrack', 'galleryCarouselDots', imageList);
       
       const modal = document.getElementById('galleryModal');
-      setScrollLock(true);
       modal.classList.add('active');
       trapFocus(modal);
+      syncAnimations();
     },
     closeGallery: function() { 
-      document.getElementById('galleryModal').classList.remove('active'); 
-      setScrollLock(false);
+      releaseModal(document.getElementById('galleryModal'));
       if(carouselIntervals['galleryCarouselTrack']) clearInterval(carouselIntervals['galleryCarouselTrack']);
     },
     
-    enforceLimit: function(checkbox, groupName, maxAllowed) {
+    enforceLimit: function(checkbox, groupName) {
+      const maxAllowed = currentActiveCustomItem?.maxSauces;
       if (groupName === 'custSauce') {
         if (document.querySelectorAll(`input[name="${groupName}"]:checked`).length > maxAllowed) {
           checkbox.checked = false;
@@ -1715,7 +1834,9 @@ const App = (function() {
     },
 
     addCustomItemToCart: async function(eventElement) {
-      if (!currentActiveCustomItem) return;
+      if (!currentActiveCustomItem || customSubmitPending) return;
+      const activeItem = currentActiveCustomItem;
+      const editIndex = editingCartIndex;
 
       const getVals = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
       const sauces = getVals('custSauce'), veggies = getVals('custVeggie'), proteins = getVals('custProtein');
@@ -1742,29 +1863,26 @@ const App = (function() {
       }
 
       if (warnings.length > 0) {
+        customSubmitPending = true;
         const proceed = await new Promise(resolve => this.triggerConfirm(warnings.join('\n\n') + `\n\nAre you sure you want to proceed?`, 'Customize Confirmation', resolve));
-        if (!proceed) return;
+        customSubmitPending = false;
+        if (!proceed || currentActiveCustomItem !== activeItem || editingCartIndex !== editIndex) return;
       }
 
-      let subParts = [];
-      if (currentActiveCustomItem.needsWellnessChoice) subParts.push(`Drink: ${document.querySelector('input[name="custWellness"]:checked').value}`);
-      if (sauces.length) subParts.push(`Sauces: ${sauces.join(', ')}`);
-      if (veggies.length) subParts.push(`Veggies: ${veggies.join(', ')}`);
-      if (proteins.length) subParts.push(`Proteins: ${proteins.join(', ')}`);
-      if (totExt > 0) subParts.push(`Add-ons: +${totExt} item(s) (+${formatKip(totExtCost)})`);
-
-      const finalSubtext = subParts.join(' | ');
-      const finalPrice = currentActiveCustomItem.price + totExtCost;
+      const choices = { sauces, veggies, proteins, drink: activeItem.needsWellnessChoice ? document.querySelector('[name="custWellness"]:checked')?.value : null };
+      if (sauces.length > maxS) return this.triggerAlert(`Please select no more than ${maxS} sauces.`, 'Sauce Limit');
+      const { subtext: finalSubtext, price: finalPrice } = customDetails(activeItem, choices);
 
       if (editingCartIndex !== null && cart[editingCartIndex]) {
         cart[editingCartIndex].subtext = finalSubtext;
         cart[editingCartIndex].price = finalPrice;
+        cart[editingCartIndex].choices = choices;
       } else {
         const existing = cart.find(c => c.id === currentActiveCustomItem.id && c.subtext === finalSubtext && c.price === finalPrice);
         if (existing) {
           existing.qty += 1;
         } else {
-          cart.push({ id: currentActiveCustomItem.id, name: currentActiveCustomItem.name, price: finalPrice, subtext: finalSubtext, qty: 1, isCustom: true, category: currentActiveCustomItem.category });
+          cart.push({ id: currentActiveCustomItem.id, name: currentActiveCustomItem.name, price: finalPrice, subtext: finalSubtext, choices, qty: 1, isCustom: true, category: currentActiveCustomItem.category });
         }
       }
 
@@ -1772,8 +1890,6 @@ const App = (function() {
       this._reRenderStore(); 
       this.closeCustomModal();
     },
-
-    clearOrderTypeError: function() {},
 
     handleCheckout: function(platform) {
       if (cart.length === 0) { 
@@ -1805,6 +1921,7 @@ const App = (function() {
       
       const radio = document.querySelector(`input[name="orderType"][value="${typeValue}"]`);
       if (radio) radio.checked = true;
+      saveCart();
 
       if (platform === 'wa') this.executeWA();
       else if (platform === 'msgr') this.executeMessenger();
@@ -1816,52 +1933,98 @@ const App = (function() {
       window.location.href = url;
     },
 
-    executeMessenger: function() {
+    executeMessenger: async function() {
       const msg = this._buildOrderMsg();
-      
-      // 1. Silently copy order details to the clipboard
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(msg).catch(() => this._fallbackCopyText(msg));
-      } else {
-        this._fallbackCopyText(msg);
-      }
+      saveCart();
+      this.triggerCustomPrompt(`<div class="messenger-checkout">
+        <p id="copyOrderStatus" role="status">Copying your order…</p>
+        <label for="messengerOrderText">Your order for Oon Jai Marketplace</label>
+        <textarea id="messengerOrderText" class="form-input" rows="6" readonly></textarea>
+        <button class="cat-btn" id="copyOrderBtn" onclick="App.copyMessengerOrder()">Copy order again</button>
+        <p>Open our Messenger chat, paste your order, then tap <strong>Send</strong>.</p>
+        <a id="openMessengerLink" class="btn-msgr" aria-disabled="true" target="_self">Open Messenger</a>
+        <div id="shareOrderOption" hidden>
+          <button id="shareOrderBtn" class="btn-msgr" style="width: 100%;" onclick="App.shareMessengerOrder()">Share order…</button>
+          <p class="messenger-help" style="margin-top: 8px;">If the link doesn’t open Messenger, use Share order. Choose Messenger if listed, then select Oon Jai Marketplace.</p>
+          <p id="shareOrderStatus" class="messenger-help" role="status"></p>
+        </div>
+        <details class="messenger-help"><summary>Messenger didn’t open?</summary>
+          <p>If the App Store opens, return here and open the Messenger app yourself. Search for <strong>Oon Jai Marketplace (@${MESSENGER_USERNAME})</strong>, paste your order, and tap Send. Your basket is saved in this browser tab.</p>
+        </details>
+        <button class="cat-btn" onclick="App.closeNotification()">Back to order</button>
+        </div>`, 'Send Your Order');
+      document.getElementById('messengerOrderText').value = msg;
+      try {
+        const canShare = typeof navigator.share === 'function' && (!navigator.canShare || navigator.canShare({ text: msg }));
+        document.getElementById('shareOrderOption').hidden = !canShare;
+      } catch { /* The copy and direct-chat options remain available. */ }
+      await this.copyMessengerOrder();
+    },
 
-      // 2. Detect if the user is on an iPhone / iPad (iOS / Safari)
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isIOS) {
-        // --- SAFARI / IOS FLOW ---
-        const fbUrl = `https://www.facebook.com/oon.jai.laos`;
-        const safariHtml = `
-          <div style="text-align: center; padding: 10px 0;">
-            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid var(--accent-green); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-              <p style="font-size: 13px; color: #ffffff; margin-bottom: 8px; font-weight: 600;">✓ Order Copied to Clipboard!</p>
-              <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Tap below to open our Facebook page, tap the <b>Message</b> button on the page, and paste your order there!</p>
-            </div>
-            <a href="${fbUrl}" target="_self" onclick="App.closeNotification();" style="display: block; width: 100%; padding: 12px; background: #1877F2; color: white; text-decoration: none; border-radius: var(--border-radius-sm); font-weight: bold; font-size: 13px; text-align: center; box-sizing: border-box;">Open Facebook Page ↗</a>
-          </div>
-        `;
-        this.triggerCustomPrompt(safariHtml, "Safari Order Guide 📘");
-
-      } else {
-        // --- ANDROID / OTHER FLOW ---
-        const messengerUrl = `https://m.me/${MESSENGER_USERNAME}`;
-        this.closeNotification();
-        window.location.href = messengerUrl;
+    shareMessengerOrder: async function() {
+      const order = document.getElementById('messengerOrderText');
+      const button = document.getElementById('shareOrderBtn');
+      const status = document.getElementById('shareOrderStatus');
+      if (!order || !navigator.share || button.disabled) return;
+      button.disabled = true;
+      try {
+        // Invoke directly from the tap, before any asynchronous clipboard work.
+        await navigator.share({ text: order.value });
+        if (status.isConnected) status.textContent = 'Check Messenger to confirm that you sent the order.';
+      } catch (error) {
+        if (status.isConnected) status.textContent = error.name === 'AbortError'
+          ? 'Sharing canceled. Your order is still here.'
+          : 'Sharing is unavailable. You can still copy and paste your order.';
+      } finally {
+        if (button.isConnected) button.disabled = false;
       }
     },
 
+    copyMessengerOrder: async function() {
+      const orderText = document.getElementById('messengerOrderText');
+      const status = document.getElementById('copyOrderStatus');
+      const button = document.getElementById('copyOrderBtn');
+      const link = document.getElementById('openMessengerLink');
+      if (!orderText || button.disabled) return;
+      button.disabled = true;
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled', 'true');
+      status.textContent = 'Copying your order…';
+      let copied = false;
+      let timeout;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await Promise.race([
+            navigator.clipboard.writeText(orderText.value),
+            new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Copy timed out')), 4000); })
+          ]);
+          copied = true;
+        }
+      } catch { /* Keep a manual copy option if permission is denied or delayed. */ }
+      finally { clearTimeout(timeout); }
+      if (!status.isConnected) return;
+      if (!copied) copied = this._fallbackCopyText(orderText.value);
+      status.textContent = copied ? 'Order copied. Paste it into the chat, then send it.' : 'Please copy your order manually from the box below.';
+      button.disabled = false;
+      // A real, directly tapped cross-domain link preserves Safari's native app handoff.
+      // Do not replace this with window.open after an await or a timed App Store fallback.
+      link.href = `https://m.me/${MESSENGER_USERNAME}`;
+      link.removeAttribute('aria-disabled');
+      if (!copied) { orderText.focus(); orderText.select(); }
+    },
+
     _fallbackCopyText: function(text) {
-      const textArea = document.createElement("textarea");
+      const textArea = document.createElement('textarea');
       textArea.value = text;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      textArea.style.top = "-999999px";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try { document.execCommand('copy'); } catch (err) {}
-      document.body.removeChild(textArea);
+      textArea.style.cssText = 'position:fixed;left:0;top:0;opacity:0;pointer-events:none';
+      const previous = document.activeElement;
+      (modalStack.at(-1) || document.body).appendChild(textArea);
+      textArea.focus(); textArea.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch { /* Return the actual copy result. */ }
+      textArea.remove();
+      previous?.focus({ preventScroll: true });
+      return copied;
     },
 
     _buildOrderMsg: function() {
@@ -1877,80 +2040,45 @@ const App = (function() {
     },
     
     triggerAlert: function(message, title) {
-      const formattedMessage = message.includes('<div') ? message : message.replace(/\n/g, '<br>');
-      document.getElementById('notifTitle').innerHTML = title; 
-      document.getElementById('notifMessage').innerHTML = formattedMessage;
-      
-      document.getElementById('notifAlertAction').style.display = 'block'; 
+      this.closeNotification();
+      document.getElementById('notifTitle').textContent = title;
+      document.getElementById('notifMessage').textContent = message;
+      document.getElementById('notifAlertAction').style.display = 'block';
       document.getElementById('notifConfirmActions').style.display = 'none';
-      
-      const m = document.getElementById('notificationModal'); 
-      setScrollLock(true);
-      m.classList.add('active'); 
-      trapFocus(m);
+      const modal = document.getElementById('notificationModal');
+      modal.classList.add('active');
+      trapFocus(modal);
     },
-    
+
     triggerCustomPrompt: function(html, title) {
-      document.getElementById('notifTitle').innerHTML = title; 
+      this.closeNotification();
+      document.getElementById('notifTitle').textContent = title;
       document.getElementById('notifMessage').innerHTML = html;
-      
-      document.getElementById('notifAlertAction').style.display = 'none'; 
+      document.getElementById('notifAlertAction').style.display = 'none';
       document.getElementById('notifConfirmActions').style.display = 'none';
-      
-      const m = document.getElementById('notificationModal'); 
-      setScrollLock(true);
-      m.classList.add('active'); 
-      trapFocus(m);
+      const modal = document.getElementById('notificationModal');
+      modal.classList.add('active');
+      trapFocus(modal);
     },
-    
-    triggerConfirm: function(message, title, callback, redirectUrl = null, confirmText = "Proceed") {
-      const formattedMessage = message.includes('<div') ? message : message.replace(/\n/g, '<br>');
-      document.getElementById('notifTitle').innerHTML = title; 
-      document.getElementById('notifMessage').innerHTML = formattedMessage;
-      
-      document.getElementById('notifAlertAction').style.display = 'none'; 
+
+    triggerConfirm: function(message, title, callback) {
+      this.triggerAlert(message, title);
+      pendingConfirmation = callback;
+      document.getElementById('notifAlertAction').style.display = 'none';
       document.getElementById('notifConfirmActions').style.display = 'flex';
-      
-      const m = document.getElementById('notificationModal'); 
-      setScrollLock(true);
-      m.classList.add('active'); 
-      trapFocus(m);
-      
-      const btnProceed = document.getElementById('btnNotifProceed');
-      
-      if (redirectUrl) {
-        btnProceed.innerText = confirmText;
-        btnProceed.href = redirectUrl;
-        btnProceed.removeAttribute("target");
-        btnProceed.removeAttribute("rel");
-        
-        btnProceed.onclick = () => { 
-          this.closeNotification(); 
-          if(callback) callback(true); 
-        };
-      } else {
-        btnProceed.innerText = confirmText;
-        btnProceed.href = "javascript:void(0)";
-        btnProceed.removeAttribute("target");
-        btnProceed.removeAttribute("rel");
-        
-        btnProceed.onclick = (e) => { 
-          e.preventDefault();
-          this.closeNotification(); 
-          if(callback) callback(true); 
-        };
-      }
-      
-      document.getElementById('btnNotifCancel').onclick = () => { 
-        this.closeNotification(); 
-        if(callback) callback(false); 
-      };
+      document.getElementById('btnNotifProceed').onclick = e => { e.preventDefault(); this.closeNotification(true); };
+      document.getElementById('btnNotifCancel').onclick = () => this.closeNotification(false);
+      trapFocus(document.getElementById('notificationModal'));
     },
-    
-    closeNotification: function() { 
-      document.getElementById('notificationModal').classList.remove('active'); 
-      setScrollLock(false);
+
+    closeNotification: function(confirmed = false) {
+      const callback = pendingConfirmation;
+      pendingConfirmation = null;
+      const modal = document.getElementById('notificationModal');
+      if (modal.classList.contains('active')) releaseModal(modal);
+      if (callback) callback(confirmed);
     }
+
   };
 })();
 </script>

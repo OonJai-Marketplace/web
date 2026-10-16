@@ -6,8 +6,8 @@ Always make a copy. Before you change anything, copy the entire code and paste i
 Never delete punctuation or code tags. Quotes (" or '), commas (,), brackets ([ or {), and tags (like <h1>, <p>, or <br>) hold the website together. Only edit the normal reading words.
 Use CTRL + F (or CMD + F on Mac). This is the "Find" shortcut. It is your best friend. Instead of scrolling, press Ctrl + F and type the exact text you want to change.
 
-🔐 PART 1: Important Accounts & Passwords Hub
-(Manager: Fill this out and keep this document highly secure!)
+🔐 PART 1: Management Accounts
+(This repository is public. Keep passwords and recovery codes in a password manager, never in these files.)
 
 To manage this website, you will need to log into three different platforms.
 
@@ -15,25 +15,25 @@ To manage this website, you will need to log into three different platforms.
 
 Website: https://github.com
 Email / Username: santos@oonjai.org or marketplace@oonjai.org (both accounts are link)
-Password: ilove#Github7
+Password: [Store credentials in your password manager, never in this repository.]
 
 2. Google Account (For the Google Sheet & Apps Script that receives the "Words of Hope" messages)
 
 Link: https://docs.google.com/spreadsheets/d/1ysVHCxagUXUV6gOFXyXkbSNM3XYz6F5RxNKX_DR_YB4/edit?usp=sharing
 Email: [ENTER YOUR GOOGLE EMAIL HERE]
-Password: [ENTER YOUR GOOGLE PASSWORD HERE]
+Password: [Store credentials in your password manager, never in this repository.]
 
 3. Postimages (Where all the website photos are uploaded and hosted)
 
 Website: https://postimages.org/
 Email: [ENTER YOUR POSTIMAGES EMAIL HERE]
-Password: [ENTER YOUR POSTIMAGES PASSWORD HERE]
+Password: [Store credentials in your password manager, never in this repository.]
 
 
 4. Google Search Console (To track how many people find the website on Google)
 Website: https://search.google.com/search-console
 Email: [ENTER YOUR GOOGLE EMAIL HERE] (Usually the same as your Google Apps Script account)
-Password: [ENTER YOUR GOOGLE PASSWORD HERE]
+Password: [Store credentials in your password manager, never in this repository.]
 
 
 💻 PART 2: How to Open, Edit, and Save in GitHub
@@ -41,7 +41,7 @@ GitHub is where the website code lives. The entire website is built into one sin
 
 Step 1: Open the Code
 Log into GitHub using the credentials in Part 1.
-Open the repository named OonJai-Marketplace/Online-Menu (or your specific repository name).
+Open the repository named OonJai-Marketplace/web.
 Click on the file on the left named index.html.
 In the top right corner of the code box, click the Pencil Icon (Edit this file).
 
@@ -61,7 +61,7 @@ Look beside the index.html file or the repository name (oonjai-marketplace). You
 Dark Orange / Dark Red Dot: This means the website is currently processing your changes. It is NOT live yet.
 Wait and Refresh: Wait a few seconds or minutes, and refresh the webpage.
 Green Checkmark (Success): When the dot turns into a green checkmark, your update is successful! You can now go to the live website and see your changes.
-Website like: click the 3 dash in the top left corner, and choose oonjai-marketplace/Online-Menu. And you will see the link just under the About section.
+Website like: click the 3 dash in the top left corner, and choose OonJai-Marketplace/web. And you will see the link just under the About section.
 
 📝 PART 3: Master Text Editing Guide (Titles, Descriptions, Footers)
 If you want to change the words on the website, press CTRL + F inside index.html and search for the exact text listed below. Carefully erase the old words and type your new words.
@@ -228,9 +228,9 @@ Home Page Sliders: Search for .home-card-slider { and change aspect-ratio: 16/9;
 Words of Hope / Photo Carousels: Search for .carousel-container { and change aspect-ratio: 16/9;
 Vertical Written Reviews: Search for .reviews-vertical-wrapper { and change aspect-ratio: 16/9;
 C. Changing Scrolling & Fading Speeds
-Home Page Image Fading Speed: Search for 3500); // Changes every 3.5 seconds. Change 3500 to a higher number (slower) or lower number (faster). (1000 = 1 second).
-Words of Hope / Review Photo Auto-Scroll: Search for startAutoPlay(trackId, 4000). Change 4000 to your desired speed (e.g., 5000 for 5 seconds).
-Vertical Written Reviews Scroll Speed: Search for 35); // Slow, continuous smooth scroll. Change 35. (Higher number = Slower scroll. 50 is very slow, 15 is fast).
+Home Page Image Fading Speed: Search for }, 3500), delayOffset); Change 3500 to a higher number (slower) or lower number (faster). (1000 = 1 second).
+Words of Hope / Review Photo Auto-Scroll: Search for the 4000 millisecond values passed to startAutoPlay in syncAnimations and the carousel controls. Change 4000 to your desired speed (e.g., 5000 for 5 seconds).
+Vertical Written Reviews Scroll Speed: Search for }, 35); in syncAnimations. Change 35. (Higher number = Slower scroll. 50 is very slow, 15 is fast).
 D. Changing the Extra Add-On Price
 If a customer exceeds their included veggies or proteins, they are charged an extra fee.
 The Math Logic: Search for const EXTRA_ADDON_PRICE = 7000;. Change 7000 to your new price.
@@ -267,3 +267,18 @@ The Add to Cart button isn't working! Check the prices in menuData. Did you put 
 The website isn't updating after I clicked save! Go back to GitHub and look for the colored dot (See Part 2, Step 4). If it's orange, you just need to wait a few more minutes until it turns green.
 Messages aren't going to the Google Sheet! Did you deploy a "New Version" in Google Apps script? Go back to Part 8, Step 2 and make sure you selected "New Version".
 
+
+
+🧪 Developer verification (October 2026)
+
+The published site still uses only index.html; no build step is required. Node.js 20 or newer is needed only for the regression tests.
+
+Run `npm ci`, then `npx playwright install chromium`, then `npm test`. The tests serve the local page and intercept external requests: no orders or Words of Hope messages are sent. To test WebKit on a supported machine, install it with `npx playwright install --with-deps webkit` and run `BROWSER=webkit npm test`.
+
+The basket is saved in sessionStorage for the current browser tab and restored after refresh or returning from checkout. Saved carts expire after 24 hours and their prices are recalculated from the current menu. If browser storage is blocked, ordering remains available for the current page visit. Closing the browser tab may clear its saved basket.
+
+Messenger checkout displays the order text and actual clipboard result before enabling a directly tapped m.me chat link on every device. It does not route iPhone users to the Facebook profile page. If native sharing is supported, Share order opens the system share sheet; the customer chooses Messenger if offered and selects the restaurant. Neither flow can guarantee that iOS opens the installed Messenger app or that a message was sent. Manual copy, retry, and recipient instructions remain available. WhatsApp checkout pre-fills the message; the customer still sends it.
+
+Words of Hope uses an external Google Apps Script deployment that is not included in this repository. Its no-cors response cannot confirm whether the spreadsheet saved the submission, so the website keeps the draft and reports that limitation. Confirmed delivery requires a readable response and server-side duplicate protection in that separate service.
+
+Safari release verification (2026-10-16): the browser suite also covers WebKit with iPhone 13, iPhone landscape, and iPhone SE touch profiles. Modal scrolling restores the original page position, touch controls have larger hit areas, and form text remains at least 16px on touch screens. Clipboard timeout/cancellation and share-sheet cancellation preserve the order. Native Messenger installation, iOS app associations, and actual delivery require a physical-device check and are not simulated by WebKit.
