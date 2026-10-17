@@ -6,6 +6,20 @@
   <title>Oon Jai Marketplace</title>
   <meta name="app-version" content="2026-10-16-images-5" />
 
+  <!-- Compatibility URL: retain the current storefront until the unified release is reachable. -->
+  <script>
+  (()=>{
+    const target=new URL('https://oonjai-marketplace.github.io/Restaurant-Back-Office/public-restaurant/');
+    if(location.hostname!=='oonjai-marketplace.github.io')return;
+    target.search=location.search;target.hash=location.hash;
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),2500);
+    fetch(new URL('release127.json',target),{cache:'no-store',signal:controller.signal})
+      .then(r=>r.ok?r.json():null)
+      .then(r=>{if(r?.version===127&&r.publicContentReady===true)location.replace(target.href);})
+      .catch(()=>{}).finally(()=>clearTimeout(timer));
+  })();
+  </script>
+
   <!-- ========================================== -->
   <!--                SEO & SEARCH LOGO           -->
   <!-- ========================================== -->
