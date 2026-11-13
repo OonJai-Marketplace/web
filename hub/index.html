@@ -7,22 +7,29 @@
   <meta name="referrer" content="no-referrer">
   <title>Oon Jai Hub</title>
   <link rel="icon" href="../assets/images/logo-png-favicon.3dff595a20.png">
-  <link rel="stylesheet" href="lantern.css?v=approved">
+  <link rel="stylesheet" href="lantern.css?v=phone1">
 </head>
 <body>
   <main class="hub">
-    <img class="artwork" src="emerald-lantern.webp" width="1536" height="1024"
-      alt="A lantern-lit terrace with a small view of Vientiane’s Patuxai arch in the distance."
-      onerror="this.closest('main').classList.add('text-layout')">
-    <header class="accessible">Oon Jai Hub</header>
-    <h1 class="accessible">Welcome to Oon Jai</h1>
-    <a class="customer" href="../"><span class="accessible">Customer Website</span></a>
-    <h2 id="team" class="accessible">Team workspaces</h2>
-    <nav aria-labelledby="team">
-      <a class="restaurant" href="/Restaurant-Back-Office/"><span class="accessible">Restaurant — Point of sale and inventory</span></a>
-      <a class="wellness" href="/Wellness/"><span class="accessible">Wellness — Community programs</span></a>
-      <a class="accounting" href="/Accounting/"><span class="accessible">Accounting — Journals and reports</span></a>
-    </nav>
+    <picture class="scene">
+      <source media="screen and (max-width: 44rem), screen and (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse)" srcset="lantern-terrace.webp">
+      <img class="artwork" src="emerald-lantern.webp" width="1536" height="1024"
+        alt="A lantern-lit terrace with Vientiane’s Patuxai arch in the distance."
+        onerror="this.closest('main').classList.add('text-layout')">
+    </picture>
+    <header class="accessible wordmark">Oon Jai Hub</header>
+    <section class="welcome" aria-labelledby="welcome-title">
+      <h1 id="welcome-title" class="accessible">Welcome to Oon Jai</h1>
+      <a class="customer" href="../"><span class="accessible">Customer Website</span></a>
+    </section>
+    <section class="team" aria-labelledby="team">
+      <h2 id="team" class="accessible">Team workspaces</h2>
+      <nav aria-labelledby="team">
+        <a class="restaurant" href="/Restaurant-Back-Office/"><span class="accessible"><strong>Restaurant</strong> <small>Point of sale and inventory</small></span></a>
+        <a class="wellness" href="/Wellness/"><span class="accessible"><strong>Wellness</strong> <small>Community programs</small></span></a>
+        <a class="accounting" href="/Accounting/"><span class="accessible"><strong>Accounting</strong> <small>Journals and reports</small></span></a>
+      </nav>
+    </section>
   </main>
 </body>
 </html>
