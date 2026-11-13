@@ -3,49 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#173e31">
+  <meta name="theme-color" content="#063b2d">
   <meta name="referrer" content="no-referrer">
   <title>Oon Jai Hub</title>
   <link rel="icon" href="../assets/images/logo-png-favicon.3dff595a20.png">
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; background: #faf8f2; color: #173e31; font: 1rem/1.5 system-ui, sans-serif; }
-    main { max-width: 60rem; margin: auto; padding: clamp(1.25rem, 5vw, 4rem); }
-    header { display: flex; align-items: center; gap: .85rem; padding-bottom: 2rem; }
-    header img { width: 3.25rem; height: 3.25rem; object-fit: contain; }
-    h1, h2, p { margin: 0; }
-    h1 { font: 500 clamp(2rem, 5vw, 3.5rem)/1.1 Georgia, serif; }
-    h2 { font-size: 1rem; margin: 2.25rem 0 .65rem; }
-    a { color: inherit; text-decoration: none; }
-    a:focus-visible { outline: 3px solid #aa4b22; outline-offset: 4px; }
-    .customer { display: grid; grid-template-columns: 3fr 2fr; align-items: stretch; background: #173e31; color: white; border-radius: 1rem; overflow: hidden; }
-    .customer div { padding: clamp(1.3rem, 4vw, 2.8rem); align-self: center; }
-    .customer strong { font: 500 clamp(1.7rem, 4vw, 2.7rem)/1.15 Georgia, serif; }
-    .customer p { margin: .5rem 0 1.25rem; color: #dfebe3; }
-    .customer span { text-decoration: underline; text-underline-offset: .2em; }
-    .customer img { width: 100%; height: 100%; min-height: 12rem; max-height: 16rem; object-fit: cover; }
-    .team { border-top: 1px solid #c7d2c8; }
-    .team a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.1rem .25rem; border-bottom: 1px solid #c7d2c8; }
-    .team strong { display: block; font-size: 1.15rem; }
-    .team small { color: #495f54; font-size: .93rem; }
-    .team b { font-size: 1.35rem; }
-    .team a:hover, .team a:focus-visible { background: #eef1e9; }
-    @media (max-width: 34rem) { .customer { grid-template-columns: 1fr; } .customer img { grid-row: 1; min-height: 0; height: 8rem; } }
-  </style>
+  <link rel="stylesheet" href="lantern.css">
 </head>
 <body>
+  <svg aria-hidden="true" class="symbols" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="leaf" viewBox="0 0 32 32"><path d="M4 28C8 19 17 12 27 5M9 22C5 11 19 10 28 3c-1 14-7 23-19 19ZM5 23C2 20 2 16 2 13c5 1 8 4 8 8"/></symbol>
+    <symbol id="dining" viewBox="0 0 32 32"><path d="m5 3 8 9m-5-11 7 9M2 6l7 8c3 3 8-1 6-5M12 14l14 15M3 29l13-13"/><ellipse cx="22" cy="9" rx="4.5" ry="8" transform="rotate(39 22 9)"/></symbol>
+    <symbol id="care" viewBox="0 0 32 32"><circle cx="16" cy="8" r="3"/><circle cx="6" cy="11" r="2.5"/><circle cx="26" cy="11" r="2.5"/><path d="M3 17c3-2 6-1 9 1m8 0c3-2 6-3 9-1M7 20l7 7c1 1 3 1 4 0l7-7m-15-3c1-4 5-5 7-2 4-3 8 1 5 4l-6 5-5-4"/></symbol>
+    <symbol id="ledger" viewBox="0 0 32 32"><path d="M2 29h28"/><path fill="currentColor" stroke="none" d="M4 18h5v8H4zm9-7h5v15h-5zm9-8h5v23h-5z"/></symbol>
+  </svg>
   <main>
-    <header><img src="../assets/images/logo-png-apple.f57033ea2d.png" width="52" height="52" alt=""><h1>Oon Jai Hub</h1></header>
-    <a class="customer" href="../">
-      <div><strong>Customer Website</strong><p>Explore the restaurant and browse our menu.</p><span>Visit website <b aria-hidden="true">→</b></span></div>
-      <img src="../assets/images/bowl-combo-full.4bf98ebc33.webp" width="500" height="375" alt="">
-    </a>
-    <h2 id="team-heading">Team workspaces</h2>
-    <nav class="team" aria-labelledby="team-heading">
-      <a href="/Restaurant-Back-Office/"><span><strong>Restaurant</strong><small>Point of sale, menu and inventory</small></span><b aria-hidden="true">→</b></a>
-      <a href="/Wellness/"><span><strong>Wellness</strong><small>Community events and volunteer activities</small></span><b aria-hidden="true">→</b></a>
-      <a href="/Accounting/"><span><strong>Accounting</strong><small>Journals, ledgers and reports</small></span><b aria-hidden="true">→</b></a>
-    </nav>
+    <section class="hero" aria-labelledby="welcome">
+      <img class="scene" src="emerald-patuxai.webp" srcset="emerald-patuxai-small.webp 800w, emerald-patuxai.webp 1700w" sizes="100vw" width="1700" height="739" alt="An imagined lantern-lit garden terrace framing Vientiane’s Patuxai victory arch." fetchpriority="high">
+      <div class="hero-inner">
+        <header>Oon Jai Hub</header>
+        <div class="welcome">
+          <h1 id="welcome">Welcome to <br>Oon Jai</h1>
+          <div class="flourish" aria-hidden="true"><i></i><svg viewBox="0 0 34 22"><path fill="currentColor" d="M16 21C6 21 2 14 1 8c9 2 14 5 15 13Zm1 0c1-11 8-15 16-17-2 9-8 16-16 17Zm-2-6C9 10 11 4 14 0c4 6 4 10 1 15Z"/></svg><i></i></div>
+          <a class="customer" href="../"><svg aria-hidden="true"><use href="#leaf"/></svg>Customer Website<span class="chevron" aria-hidden="true"></span></a>
+        </div>
+      </div>
+    </section>
+    <section class="workspaces" aria-labelledby="team-title">
+      <div class="frame">
+        <h2 id="team-title">Team workspaces</h2>
+        <nav aria-label="Team workspaces">
+          <a href="/Restaurant-Back-Office/"><svg aria-hidden="true"><use href="#dining"/></svg><span><strong>Restaurant</strong><small>Point of sale and inventory</small></span><i aria-hidden="true"></i></a>
+          <a href="/Wellness/"><svg aria-hidden="true"><use href="#care"/></svg><span><strong>Wellness</strong><small>Community programs</small></span><i aria-hidden="true"></i></a>
+          <a href="/Accounting/"><svg aria-hidden="true"><use href="#ledger"/></svg><span><strong>Accounting</strong><small>Journals and reports</small></span><i aria-hidden="true"></i></a>
+        </nav>
+      </div>
+    </section>
   </main>
 </body>
 </html>
