@@ -1,57 +1,26 @@
-:root { color-scheme:dark; --ivory:#fff7df; --mint:#b6dfad; --forest:#043a2a; }
-* {box-sizing:border-box}
-body {margin:0;background:var(--forest);color:var(--ivory);font:1rem/1.45 system-ui,sans-serif}
-.symbols {position:absolute;width:0;height:0;overflow:hidden}
-a {color:inherit;text-decoration:none}
-a:focus-visible {outline:3px solid #fff;outline-offset:5px}
-.hero {position:relative;isolation:isolate;overflow:hidden;background:#092f21}
-.scene,.hero::after {position:absolute;inset:0;width:100%;height:100%;z-index:-1}
-.scene {object-fit:cover;object-position:53% 50%}
-.hero::after {content:"";background:linear-gradient(90deg,rgba(0,38,24,.9),rgba(0,39,24,.65) 19%,transparent 45%)}
-.hero-inner {max-width:108rem;margin:auto;min-height:clamp(28rem,43.9vw,47rem);padding:clamp(1.4rem,2.7vw,3.2rem) 4.4vw;display:flex;flex-direction:column}
-header,h1,h2,strong {font-family:Georgia,'Times New Roman',serif}
-header {font-size:clamp(1.7rem,3.15vw,3.4rem);line-height:1.1;width:max-content;letter-spacing:-.035em}
-header::after {content:"";display:block;height:2px;margin:.35em 4% 0;background:linear-gradient(90deg,transparent,var(--mint) 20%,var(--mint) 70%,transparent);border-radius:50%}
-.welcome {flex:1;display:flex;align-items:flex-start;justify-content:center;flex-direction:column;padding:.8rem 0}
-h1 {font-weight:500;font-size:clamp(3.25rem,6.1vw,7rem);line-height:.95;letter-spacing:-.045em;margin:0;text-shadow:0 2px 14px #001a12}
-.flourish {display:flex;align-items:center;gap:.8rem;width:clamp(10rem,16vw,17rem);color:var(--mint);margin:clamp(.9rem,1.6vw,1.8rem) 0}
-.flourish i {height:1px;background:currentColor;flex:1}
-.flourish svg {width:2rem;height:1.5rem}
-.customer {display:inline-flex;align-items:center;gap:.7em;min-height:54px;padding:.42em .75em;background:var(--ivory);border:3px solid #367856;border-radius:.55em;color:#063526;font:bold clamp(1.45rem,2.4vw,2.8rem)/1.25 Georgia,serif;box-shadow:0 4px 18px #00251955}
-.customer svg,nav svg {fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.customer svg {width:1.2em;height:1.2em}
-.chevron,nav i::after {display:block;width:.42em;height:.42em;border:solid currentColor;border-width:0 .1em .1em 0;transform:rotate(-45deg)}
-.customer:hover {background:#fffdf1;border-color:#98c697}
-.workspaces {background:radial-gradient(ellipse at 50% 10%,#07553c,#022d20 85%);padding:clamp(.8rem,1.6vw,1.8rem)}
-.frame {max-width:105rem;margin:auto;border:1px solid #b4cea6;border-radius:1rem;padding:0 clamp(.8rem,1.6vw,2rem) clamp(1rem,2vw,2.4rem)}
-h2 {display:flex;justify-content:center;align-items:center;gap:.7em;margin:.3em 0 .6em;font-size:clamp(1.7rem,2.8vw,3rem);font-weight:500}
-h2::before,h2::after {content:"";height:1px;width:min(18vw,14rem);background:linear-gradient(90deg,transparent,var(--mint))}
-h2::after {transform:rotate(180deg)}
-nav {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.65rem,1.4vw,1.5rem)}
-nav a {display:flex;align-items:center;gap:clamp(.6rem,1.15vw,1.25rem);min-height:clamp(6rem,10.7vw,11.5rem);padding:clamp(.75rem,1.4vw,1.5rem);border:1px solid #85b994;border-radius:1rem;background:linear-gradient(158deg,#126044,#054532 60%,#033626)}
-nav a:hover {background:#146344;border-color:var(--ivory)}
-nav svg {width:clamp(2rem,4.85vw,5.6rem);height:clamp(2.8rem,5.75vw,6rem);padding-right:clamp(.5rem,1vw,1.15rem);border-right:1px solid #bdd6b8;flex:none}
-nav strong,nav small {display:block} nav strong {font-weight:500;font-size:clamp(1.45rem,2.55vw,2.9rem);line-height:1.13;letter-spacing:-.025em}
-nav small {font-size:clamp(.8rem,1.27vw,1.27rem);margin-top:.4em}
-nav i {display:grid;place-items:center;flex:none;width:clamp(1.4rem,2.7vw,2.7rem);aspect-ratio:1;margin-left:auto;border-radius:100%;background:var(--ivory);color:var(--forest)}
-nav i::after {content:"";font-size:1.25rem;margin-left:-.14em}
-@media(max-width:750px) {
-  .hero-inner {min-height:clamp(27rem,80vw,32rem);padding:1.2rem 5vw}
-  .scene {object-position:55% 50%}
-  .hero::after {background:linear-gradient(90deg,#002a1dc9,transparent 52%),linear-gradient(0deg,#012d20e6,transparent 35%)}
-  .welcome {justify-content:flex-end;padding-bottom:.2rem}
-  h1 {font-size:clamp(2.8rem,7vw,4.2rem)}
-  .flourish {width:9rem;margin:.55rem 0}
-  .customer {font-size:1.35rem;min-height:46px}
-  nav {grid-template-columns:1fr}
-  nav a {min-height:4.4rem;padding:.55rem .9rem;gap:1rem}
-  nav svg {width:3rem;height:2.8rem;padding-right:.7rem}
-  nav strong {font-size:1.45rem} nav small {margin-top:.1rem}
-  .frame {padding:0 .65rem .7rem} h2 {font-size:1.55rem}
+* { box-sizing: border-box; }
+body { margin: 0; background: #032f23; color: #fff8e3; font: 1rem/1.5 system-ui, sans-serif; }
+.hub { max-width: 120rem; margin-inline: auto; position: relative; }
+.artwork { display: block; width: 100%; height: auto; }
+.accessible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+.hub a { position: absolute; display: block; border-radius: 1.05vw; color: inherit; }
+.hub a:focus-visible { outline: 3px solid white; outline-offset: 1px; box-shadow: 0 0 0 6px #07573b; }
+/* Bounds of the four original controls in the approved 1536 × 1024 artwork. */
+.customer { left: 4.49%; top: 45.51%; width: 30.6%; height: 9.67%; }
+.restaurant { left: 3.19%; width: 31.12%; }
+.wellness { left: 35.68%; width: 29.56%; }
+.accounting { left: 66.67%; width: 30.14%; }
+nav a { top: 77.54%; height: 16.41%; }
+@media (max-width: 44rem) {
+  .customer::before, nav a::before { content: ""; position: absolute; inset-inline: 0; top: 50%; transform: translateY(-50%); min-height: 44px; height: 100%; }
 }
-@media(max-width:480px) {
-  .scene {height:72%;object-position:56% 50%}
-  .hero::after {background:linear-gradient(to top,#073c29 18%,transparent 48%),linear-gradient(90deg,#0227197a,transparent 45%)}
-  .hero-inner {min-height:26.5rem}
-  h1 {font-size:2.75rem} h1 br {display:none} h1 br::after {content:" "}
+.text-layout { padding: 1.25rem; }
+.text-layout .artwork { display: none; }
+.text-layout .accessible { position: static; width: auto; height: auto; clip-path: none; white-space: normal; }
+.text-layout a { position: static; width: auto; height: auto; padding: .75rem; text-decoration: underline; }
+@media (forced-colors: active) {
+  .artwork { display: none; }
+  .hub { padding: 1.25rem; }
+  .accessible { position: static; width: auto; height: auto; clip-path: none; white-space: normal; }
+  .hub a { position: static; width: auto; height: auto; padding: .75rem; text-decoration: underline; }
 }
