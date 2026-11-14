@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#032f23">
   <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="./app.webmanifest">
+  <link rel="apple-touch-icon" href="./hub-192.png">
+  <script src="./hub-app.js" defer></script>
   <title>Oon Jai Hub</title>
   <link rel="icon" href="../assets/images/logo-png-favicon.3dff595a20.png">
-  <link rel="stylesheet" href="lantern.css?v=phone1">
+  <link rel="stylesheet" href="lantern.css?v=app1">
 </head>
 <body>
   <main class="hub">
@@ -31,5 +34,12 @@
       </nav>
     </section>
   </main>
+  <footer class="hub-tools" aria-label="Hub options">
+    <button type="button" id="install-hub" hidden>Install hub</button>
+    <a href="./Oon-Jai-Hub.apk" download>Download Android APK</a>
+    <button type="button" id="share-hub" hidden>Share hub</button>
+    <p id="hub-status" role="status" hidden></p>
+    <input id="share-url" aria-label="Hub link to copy" readonly hidden>
+  </footer>
 </body>
 </html>

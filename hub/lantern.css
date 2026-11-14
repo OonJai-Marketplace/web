@@ -114,3 +114,18 @@ nav a { top: 77.54%; height: 16.41%; }
   .hub a:active { filter: brightness(1.1); }
   .text-layout .scene { display: none; }
 }
+
+.hub-tools {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: .25rem 1rem; padding: .6rem 1rem max(.7rem, env(safe-area-inset-bottom));
+  background: #032f23; border-top: 1px solid #42775c; color: #fff5d8; text-align: center;
+}
+.hub-tools a, .hub-tools button {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding: .35rem .25rem; color: inherit; background: transparent;
+  border: 0; font: inherit; font-size: .92rem; text-decoration: underline;
+  text-underline-offset: .2em; cursor: pointer;
+}
+.hub-tools p { flex-basis: 100%; margin: .1rem 0 .45rem; }
+.hub-tools input { max-width: 100%; width: 26rem; font: inherit; padding: .5rem; }
+.hub-tools [hidden] { display: none; }
