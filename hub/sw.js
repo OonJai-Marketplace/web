@@ -1,7 +1,7 @@
-const CACHE = 'oon-jai-hub-shell-v1';
+const CACHE = 'oon-jai-hub-shell-v2';
 const ROOT = new URL('./', self.location.href).href;
 const FILES = [
-  './', 'lantern.css?v=app1', 'hub-app.js', 'app.webmanifest',
+  './', 'gateway.css?v=2','lang.js?v=2','leave.html','leave.js?v=2', 'hub-app.js?v=2', 'app.webmanifest',
   'lantern-terrace.webp', 'emerald-lantern.webp', 'lantern-symbols.png',
   'hub-192.png', 'hub-512.png', '../assets/images/logo-png-favicon.3dff595a20.png'
 ].map(path => new URL(path, ROOT).href);

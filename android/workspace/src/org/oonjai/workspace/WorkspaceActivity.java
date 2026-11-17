@@ -25,6 +25,7 @@ public final class WorkspaceActivity extends Activity {
         if ("accounting".equals(area)) { title="Accounting"; start="phone.html"; }
         else if ("restaurant".equals(area)) { title="Restaurant"; start="index.html"; }
         else if ("wellness".equals(area)) { title="Wellness"; start="index.html"; }
+        else if ("hr".equals(area)) { boolean lao=getSharedPreferences("hub",MODE_PRIVATE).getBoolean("lao","lo".equals(Locale.getDefault().getLanguage())); title=lao?"ຂໍລາພັກ":"Request leave"; start="leave.html?lang="+(lao?"lo":"en"); }
         else if ("customer".equals(area)) { title="Customer Website"; start="public-restaurant/index.html"; }
         else { finish(); return; }
         host = area + ".oonjai.invalid";
@@ -64,7 +65,7 @@ public final class WorkspaceActivity extends Activity {
             }
             @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest request) {
                 Uri uri = request.getUrl();
-                if (local(uri)) return false;
+                if (local(uri)) { if("hr".equals(area)&&"/".equals(uri.getPath())){finish();return true;} return false; }
                 if (!request.isForMainFrame()) return true;
                 if ("oonjai-marketplace.github.io".equals(uri.getHost()) && "/web/hub/".equals(uri.getPath())) finish();
                 else if (request.hasGesture() && ("https".equals(uri.getScheme()) || "tel".equals(uri.getScheme()) || "mailto".equals(uri.getScheme()))) {

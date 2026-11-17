@@ -1,58 +1,32 @@
-const installButton = document.querySelector('#install-hub');
-const shareButton = document.querySelector('#share-hub');
-const statusLine = document.querySelector('#hub-status');
-const shareField = document.querySelector('#share-url');
-const hubUrl = new URL('./', location.href).href;
-let installPrompt;
-function announce(message) {
-  statusLine.textContent = message;
-  statusLine.hidden = false;
-}
-const standalone = matchMedia('(display-mode: standalone)');
-function refreshInstall() {
-  installButton.hidden = standalone.matches || navigator.standalone === true;
-}
-refreshInstall();
-standalone.addEventListener?.('change', refreshInstall);
-window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault();
-  installPrompt = event;
+const publicHub='https://oonjai-marketplace.github.io/web/hub/';
+document.querySelector('#share-hub').onclick=async()=>{
+ try{if(navigator.share)await navigator.share({title:'Oon Jai Hub',url:publicHub});else{await navigator.clipboard.writeText(publicHub);const n=document.querySelector('#hub-status');n.hidden=false;n.textContent=tr('copied')}}catch(e){if(e.name!=='AbortError')prompt(tr('share'),publicHub)}
+};
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+const installButton=document.querySelector('#install-hub');
+window.addEventListener('beforeinstallprompt',event=>{
+ event.preventDefault();installButton.hidden=false;
+ installButton.onclick=async()=>{await event.prompt();installButton.hidden=true};
 });
-window.addEventListener('appinstalled', () => {
-  installButton.hidden = true;
-  installPrompt = null;
-  announce('Oon Jai Hub is installed.');
-});
-installButton.addEventListener('click', async () => {
-  if (installPrompt) {
-    const prompt = installPrompt;
-    installPrompt = null;
-    try {
-      await prompt.prompt();
-      await prompt.userChoice;
-      return;
-    } catch { /* Browser may have withdrawn the prompt. */ }
-  }
-  const appleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  announce(appleMobile ? 'In Safari, tap Share, then Add to Home Screen.' :
-    'Open the browser menu and choose Install app or Add to Home screen if available. On Android, you can also download the APK here.');
-});
-shareButton.hidden = false;
-shareButton.addEventListener('click', async () => {
-  if (navigator.share) {
-    try { await navigator.share({title: 'Oon Jai Hub', url: hubUrl}); return; }
-    catch (error) { if (error.name === 'AbortError') return; }
-  }
-  try {
-    await navigator.clipboard.writeText(hubUrl);
-    announce('Hub link copied.');
-  } catch {
-    shareField.value = hubUrl;
-    shareField.hidden = false;
-    shareField.focus();
-    shareField.select();
-    announce('Copy the selected hub link.');
-  }
-});
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+const downloadButton=document.querySelector('#download-app');
+let readyApk;
+downloadButton.onclick=async()=>{
+ const save=()=>{const a=document.createElement('a');a.href=readyApk;a.download='Oon-Jai-1.1.apk';a.click()};
+ if(readyApk){save();return}
+ downloadButton.disabled=true;downloadButton.dataset.t='loadingApp';translate();
+ try{
+   const parts=[];
+   for(let i=0;i<3;i++){
+     const response=await fetch('android-1.1/application.part'+i);
+     if(!response.ok)throw Error();
+     parts.push(await response.arrayBuffer());
+   }
+   const file=new Blob(parts,{type:'application/vnd.android.package-archive'});
+   const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+   const hex=Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('');
+   if(hex!=='29a691f4d09bd7a96a5a23a672bc3444e558283aa565240aefae5fef81f8697d')throw Error();
+   readyApk=URL.createObjectURL(file);downloadButton.dataset.t='saveApp';save();
+ }catch{downloadButton.dataset.t='downloadError'}
+ finally{downloadButton.disabled=false;translate()}
+};

@@ -40,6 +40,7 @@ marker="if(window.ReceiptNative214?.available){S.shellReady=true;"
 if marker not in s: raise ValueError('Review installed-shell readiness for this Accounting release')
 p.write_text(s.replace(marker,"if(location.hostname==='accounting.oonjai.invalid'||window.ReceiptNative214?.available){S.shellReady=true;"))
 
+stage(Path(__file__).resolve().parents[2]/'hub','hr',['leave.html','leave.js','gateway.css','lang.js'])
 stage(args.restaurant,'restaurant',['index.html','manifest.webmanifest','pos/**/*','back-office/**/*','kitchen/**/*','public-restaurant/**/*','assets/**/*','scripts/**/*','styles/**/*','vendor/**/*'])
 stage(args.restaurant,'customer',['public-restaurant/**/*','assets/app-icons/*','styles/promotions146.css','scripts/supabase-config.js','scripts/public-menu-rules131.js','scripts/promotion-kit146.js','vendor/**/*'])
 stage(args.wellness,'wellness',['*.html','*.js','*.css','*.webmanifest','version.json','vendor/**/*','assets/**/*'])

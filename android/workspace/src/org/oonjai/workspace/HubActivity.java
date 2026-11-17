@@ -12,6 +12,23 @@ import android.widget.*;
 public final class HubActivity extends Activity {
     static final int GREEN = 0xff053b2b, CREAM = 0xfffff5d8;
     private LinearLayout column;
+    private boolean lao;
+    private String label(String en,String lo){return lao?lo:en;}
+    private void controls(){
+        LinearLayout bar=new LinearLayout(this);
+        bar.setGravity(Gravity.END);
+        Button lang=new Button(this),more=new Button(this);
+        lang.setText(label("ພາສາລາວ","English"));
+        lang.setOnClickListener(v->{getSharedPreferences("hub",MODE_PRIVATE).edit().putBoolean("lao",!lao).apply();recreate();});
+        more.setText("⋮");more.setContentDescription(label("More options","ຕົວເລືອກ"));
+        more.setOnClickListener(v->{
+            PopupMenu menu=new PopupMenu(this,more);
+            menu.getMenu().add(label("HR · Request leave","ຝ່າຍບຸກຄະລາກອນ · ຂໍລາພັກ")).setOnMenuItemClickListener(i->{startActivity(new Intent(this,WorkspaceActivity.class).putExtra("workspace","hr"));return true;});
+            menu.getMenu().add(label("Share Hub link","ແບ່ງປັນລິ້ງ")).setOnMenuItemClickListener(i->{startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT,"https://oonjai-marketplace.github.io/web/hub/"),null));return true;});
+            menu.show();
+        });
+        bar.addView(lang);bar.addView(more);column.addView(bar);
+    }
     private int dp(float n) { return Math.round(n * getResources().getDisplayMetrics().density); }
 
     static void fitSystemBars(View view) {
@@ -32,17 +49,18 @@ public final class HubActivity extends Activity {
         column.setOrientation(LinearLayout.VERTICAL);
         column.setPadding(0, dp(8), 0, dp(20));
         scroll.addView(column);
-        heading("Oon Jai Hub", 25);
+        lao=getSharedPreferences("hub",MODE_PRIVATE).getBoolean("lao","lo".equals(java.util.Locale.getDefault().getLanguage()));
+        controls();
         ImageView scene = new ImageView(this);
         scene.setImageResource(getResources().getIdentifier("terrace", "drawable", getPackageName()));
         scene.setScaleType(ImageView.ScaleType.CENTER_CROP);
         column.addView(scene, -1, dp(186));
-        heading("Welcome to Oon Jai", 28);
-        destination("Customer Website", "customer", true);
-        heading("Team workspaces", 20);
-        destination("Restaurant", "restaurant", false);
-        destination("Wellness", "wellness", false);
-        destination("Accounting", "accounting", false);
+        heading(label("Welcome to Oon Jai","ຍິນດີຕ້ອນຮັບສູ່ອຸ່ນໃຈ"), 28);
+        destination(label("Customer Website","ເວັບໄຊສຳລັບລູກຄ້າ"), "customer", true);
+        heading(label("Team workspaces","ພື້ນທີ່ເຮັດວຽກ"), 20);
+        destination(label("Restaurant","ຮ້ານອາຫານ"), "restaurant", false);
+        destination(label("Wellness","ສຸຂະພາບ"), "wellness", false);
+        destination(label("Accounting","ບັນຊີ"), "accounting", false);
         setContentView(scroll);
     }
 

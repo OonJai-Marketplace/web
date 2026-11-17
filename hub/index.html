@@ -1,45 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#032f23">
-  <meta name="referrer" content="no-referrer">
-  <link rel="manifest" href="./app.webmanifest">
-  <link rel="apple-touch-icon" href="./hub-192.png">
-  <script src="./hub-app.js" defer></script>
-  <title>Oon Jai Hub</title>
-  <link rel="icon" href="../assets/images/logo-png-favicon.3dff595a20.png">
-  <link rel="stylesheet" href="lantern.css?v=app1">
-</head>
-<body>
-  <main class="hub">
-    <picture class="scene">
-      <source media="screen and (max-width: 44rem), screen and (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse)" srcset="lantern-terrace.webp">
-      <img class="artwork" src="emerald-lantern.webp" width="1536" height="1024"
-        alt="A lantern-lit terrace with Vientiane’s Patuxai arch in the distance."
-        onerror="this.closest('main').classList.add('text-layout')">
-    </picture>
-    <header class="accessible wordmark">Oon Jai Hub</header>
-    <section class="welcome" aria-labelledby="welcome-title">
-      <h1 id="welcome-title" class="accessible">Welcome to Oon Jai</h1>
-      <a class="customer" href="../"><span class="accessible">Customer Website</span></a>
-    </section>
-    <section class="team" aria-labelledby="team">
-      <h2 id="team" class="accessible">Team workspaces</h2>
-      <nav aria-labelledby="team">
-        <a class="restaurant" href="/Restaurant-Back-Office/"><span class="accessible"><strong>Restaurant</strong> <small>Point of sale and inventory</small></span></a>
-        <a class="wellness" href="/Wellness/"><span class="accessible"><strong>Wellness</strong> <small>Community programs</small></span></a>
-        <a class="accounting" href="/Accounting/"><span class="accessible"><strong>Accounting</strong> <small>Journals and reports</small></span></a>
-      </nav>
-    </section>
-  </main>
-  <footer class="hub-tools" aria-label="Hub options">
-    <button type="button" id="install-hub" hidden>Install hub</button>
-    <a href="./Oon-Jai-Hub.apk" download>Download Android APK</a>
-    <button type="button" id="share-hub" hidden>Share hub</button>
-    <p id="hub-status" role="status" hidden></p>
-    <input id="share-url" aria-label="Hub link to copy" readonly hidden>
-  </footer>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#083d30"><title>Oon Jai Hub</title><link rel="manifest" href="app.webmanifest"><link rel="icon" href="hub-192.png"><link rel="stylesheet" href="gateway.css?v=2"><script defer src="lang.js?v=2"></script><script defer src="hub-app.js?v=2"></script></head><body><main class="gateway">
+<header><strong>Oon Jai Hub</strong><div class="tools"><button id="lang" type="button"></button><details id="more"><summary aria-label="Menu">•••</summary><nav><a href="leave.html" data-t="hr">HR · Request leave</a><button id="download-app" data-t="apk">Download Android app</button><button id="install-hub" hidden data-t="install">Install web Hub</button><button id="share-hub" data-t="share">Share Hub link</button></nav></details></div></header>
+<section class="hero"><div><small data-t="hello">Sabaidee</small><h1 data-t="welcome">Welcome to Oon Jai</h1><a class="customer" href="../" data-t="customer">Customer Website</a></div></section>
+<section class="teams"><h2 data-t="team">Team workspaces</h2><div class="destinations"><a href="/Restaurant-Back-Office/"><b data-t="restaurant">Restaurant</b><span data-t="pos">Point of sale and inventory</span></a><a href="/Wellness/"><b data-t="wellness">Wellness</b><span data-t="programs">Community programs</span></a><a href="/Accounting/"><b data-t="accounting">Accounting</b><span data-t="journals">Journals and reports</span></a></div></section><p id="hub-status" hidden role="status"></p></main></body></html>
