@@ -12,7 +12,7 @@ import android.widget.*;
 import java.io.*;
 import java.util.Locale;
 
-public final class WorkspaceActivity extends Activity {
+public class WorkspaceActivity extends Activity {
     private String area, host;
     private WebView page;
     private PermissionRequest cameraRequest;
@@ -20,9 +20,12 @@ public final class WorkspaceActivity extends Activity {
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
-        area = getIntent().getStringExtra("workspace");
+        area = this instanceof HubActivity ? "hub" : getIntent().getStringExtra("workspace");
         String title, start;
-        if ("accounting".equals(area)) { title="Accounting"; start="phone.html"; }
+        if ("hub".equals(area)) { title="Oon Jai Hub"; start="index.html";
+            if(savedLanguageExists() && state==null) start+="?initial="+(getSharedPreferences("hub",MODE_PRIVATE).getBoolean("lao",false)?"lo":"en");
+        }
+        else if ("accounting".equals(area)) { title="Accounting"; start="phone.html"; }
         else if ("restaurant".equals(area)) { title="Restaurant"; start="index.html"; }
         else if ("wellness".equals(area)) { title="Wellness"; start="index.html"; }
         else if ("hr".equals(area)) { boolean lao=getSharedPreferences("hub",MODE_PRIVATE).getBoolean("lao","lo".equals(Locale.getDefault().getLanguage())); title=lao?"ຂໍລາພັກ":"Request leave"; start="leave.html?lang="+(lao?"lo":"en"); }
@@ -46,7 +49,7 @@ public final class WorkspaceActivity extends Activity {
         name.setTextSize(18);
         name.setTextColor(HubActivity.CREAM);
         bar.addView(name);
-        view.addView(bar);
+        if (!"hub".equals(area)) view.addView(bar);
         page = new WebView(this);
         view.addView(page, new LinearLayout.LayoutParams(-1,0,1));
         setContentView(view);
@@ -56,15 +59,38 @@ public final class WorkspaceActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        if ("hub".equals(area)) { page.setBackgroundColor(HubActivity.GREEN); getWindow().setStatusBarColor(HubActivity.GREEN); getWindow().setNavigationBarColor(HubActivity.GREEN); }
         page.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView v, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (local(uri)) return asset(uri);
+                if ("hub".equals(area)) return missing();
                 if (uri.getHost()!=null && uri.getHost().endsWith(".oonjai.invalid")) return missing();
                 return super.shouldInterceptRequest(v, request);
             }
             @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest request) {
                 Uri uri = request.getUrl();
+                if ("hub".equals(area)) {
+                    if (!request.isForMainFrame() || !local(uri)) return true;
+                    String path = uri.getPath();
+                    if ("/share".equals(path)) {
+                        startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).setType("text/plain")
+                            .putExtra(Intent.EXTRA_TEXT,"https://oonjai-marketplace.github.io/web/hub/"), null));
+                        return true;
+                    }
+                    String destination = null;
+                    if ("/".equals(path)) destination="customer";
+                    else if ("/leave.html".equals(path)) destination="hr";
+                    else if ("/Accounting/".equals(path)) destination="accounting";
+                    else if ("/Wellness/".equals(path)) destination="wellness";
+                    else if ("/Restaurant-Back-Office/".equals(path)) destination="restaurant";
+                    if (destination != null) {
+                        if ("hr".equals(destination))
+                            getSharedPreferences("hub",MODE_PRIVATE).edit().putBoolean("lao","lo".equals(uri.getQueryParameter("lang"))).apply();
+                        startActivity(new Intent(WorkspaceActivity.this,WorkspaceActivity.class).putExtra("workspace",destination));
+                    }
+                    return true;
+                }
                 if (local(uri)) { if("hr".equals(area)&&"/".equals(uri.getPath())){finish();return true;} return false; }
                 if (!request.isForMainFrame()) return true;
                 if ("oonjai-marketplace.github.io".equals(uri.getHost()) && "/web/hub/".equals(uri.getPath())) finish();
@@ -99,6 +125,7 @@ public final class WorkspaceActivity extends Activity {
         if (state==null || page.restoreState(state)==null) page.loadUrl("https://"+host+"/"+start);
     }
 
+    private boolean savedLanguageExists() { return getSharedPreferences("hub",MODE_PRIVATE).contains("lao"); }
     private boolean local(Uri uri) {
         return "https".equals(uri.getScheme()) && host.equals(uri.getHost()) && uri.getPort()==-1 && uri.getUserInfo()==null;
     }

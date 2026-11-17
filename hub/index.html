@@ -1,4 +1,40 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#083d30"><title>Oon Jai Hub</title><link rel="manifest" href="app.webmanifest"><link rel="icon" href="hub-192.png"><link rel="stylesheet" href="gateway.css?v=2"><script defer src="lang.js?v=2"></script><script defer src="hub-app.js?v=2"></script></head><body><main class="gateway">
-<header><strong>Oon Jai Hub</strong><div class="tools"><button id="lang" type="button"></button><details id="more"><summary aria-label="Menu">•••</summary><nav><a href="leave.html" data-t="hr">HR · Request leave</a><button id="download-app" data-t="apk">Download Android app</button><button id="install-hub" hidden data-t="install">Install web Hub</button><button id="share-hub" data-t="share">Share Hub link</button></nav></details></div></header>
-<section class="hero"><div><small data-t="hello">Sabaidee</small><h1 data-t="welcome">Welcome to Oon Jai</h1><a class="customer" href="../" data-t="customer">Customer Website</a></div></section>
-<section class="teams"><h2 data-t="team">Team workspaces</h2><div class="destinations"><a href="/Restaurant-Back-Office/"><b data-t="restaurant">Restaurant</b><span data-t="pos">Point of sale and inventory</span></a><a href="/Wellness/"><b data-t="wellness">Wellness</b><span data-t="programs">Community programs</span></a><a href="/Accounting/"><b data-t="accounting">Accounting</b><span data-t="journals">Journals and reports</span></a></div></section><p id="hub-status" hidden role="status"></p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#062e23">
+<title>Oon Jai Hub</title>
+<link rel="manifest" href="app.webmanifest">
+<link rel="icon" href="hub-192.png">
+<link rel="stylesheet" href="gateway.css?v=3">
+<link rel="stylesheet" href="home.css?v=3">
+<script defer src="lang.js?v=3"></script>
+<script defer src="hub-app.js?v=3"></script>
+</head>
+<body class="home">
+<main class="gateway">
+  <header class="mast"><strong>Oon Jai Hub</strong><div class="tools">
+    <button id="lang" type="button"></button>
+    <details id="more"><summary aria-label="Hub menu"><span aria-hidden="true">•••</span></summary>
+    <nav><a href="leave.html" data-t="hr">HR · Request leave</a><button id="download-app" data-t="apk">Download Android app</button><button id="install-hub" hidden data-t="install">Install web Hub</button><button id="share-hub" data-t="share">Share Hub link</button></nav></details>
+  </div></header>
+  <section class="hero" aria-labelledby="welcome">
+    <div class="composition"><div class="hero-art"></div>
+    <p class="greeting" data-t="hello">Sabaidee</p>
+    <h1 id="welcome"><span data-t="welcome">Welcome to Oon Jai</span></h1>
+    <a class="customer" href="../"><span data-t="customer">Customer Website</span></a>
+    </div>
+  </section>
+  <section class="teams"><div class="team-frame">
+    <h2 data-t="team">Team workspaces</h2>
+    <div class="destinations">
+      <a href="/Restaurant-Back-Office/"><picture><source media="(orientation:landscape)" srcset="art/wide-restaurant.webp"><img src="art/restaurant.webp" alt=""></picture><span><b data-t="restaurant">Restaurant</b><small data-t="pos">Point of sale and inventory</small></span><i aria-hidden="true">›</i></a>
+      <a href="/Wellness/"><picture><source media="(orientation:landscape)" srcset="art/wide-wellness.webp"><img src="art/wellness.webp" alt=""></picture><span><b data-t="wellness">Wellness</b><small data-t="programs">Community programs</small></span><i aria-hidden="true">›</i></a>
+      <a href="/Accounting/"><picture><source media="(orientation:landscape)" srcset="art/wide-accounting.webp"><img src="art/accounting.webp" alt=""></picture><span><b data-t="accounting">Accounting</b><small data-t="journals">Journals and reports</small></span><i aria-hidden="true">›</i></a>
+    </div>
+  </div></section>
+</main>
+<p id="hub-status" hidden role="status"></p>
+</body>
+</html>
