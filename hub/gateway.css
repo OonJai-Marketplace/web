@@ -5,3 +5,5 @@
 #lang span { opacity:.76; font:500 14px/1.4 system-ui,sans-serif; }
 #lang span+span { border-left:1px solid #779d89; padding-left:.38em; }
 #lang .selected { opacity:1; font-weight:700; }
+
+.leave-toolbar459{display:flex;justify-content:space-between;align-items:center;gap:12px}.leave-sheet459 h1{text-align:center;margin:12px 0}.leave-sheet459 .leave-signing459{font-size:14px;color:#496254;margin:16px 0}.leave-sheet459 .tools{color:#153c2e}

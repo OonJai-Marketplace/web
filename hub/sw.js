@@ -1,7 +1,7 @@
-const CACHE = 'oon-jai-hub-shell-v3';
+const CACHE = 'oon-jai-hub-shell-leave459';
 const ROOT = new URL('./', self.location.href).href;
 const FILES = [
-  './', 'gateway.css?v=3','lang.js?v=3','leave.html','leave.js?v=3', 'hub-app.js?v=3', 'app.webmanifest',
+  './', 'gateway.css?v=leave459','lang.js?v=leave459','leave.html','leave.js?v=leave459', 'hub-app.js?v=3', 'app.webmanifest',
   'home.css?v=3', ...['wide-restaurant','wide-wellness','wide-accounting','wide','phone','wide-scene','phone-scene','restaurant','wellness','accounting'].map(name=>'art/'+name+'.webp'),
   'hub-192.png', 'hub-512.png', '../assets/images/logo-png-favicon.3dff595a20.png'
 ].map(path => new URL(path, ROOT).href);
