@@ -52,3 +52,9 @@ for page in out.rglob('*.html'):
     s=page.read_text()
     s=re.sub(r'(<head\b[^>]*>)',r"\1<script>if(location.hostname.endsWith('.oonjai.invalid'))delete Navigator.prototype.serviceWorker;</script>",s,count=1,flags=re.I)
     page.write_text(s)
+
+# The Hub uses the same encrypted native recovery queue as Accounting.
+native=(a/'mobile/connected-accounting/src/pending-scan.mjs').read_text().replace('export function pendingScan','function pendingScan')+'\n'+(Path(__file__).parent/'receipt-native.js').read_text()
+(out/'accounting/scripts/workspace-receipt-native477.js').write_text(native)
+for page in (out/'accounting').glob('*.html'):
+    page.write_text(page.read_text().replace('</head>','<script src="scripts/workspace-receipt-native477.js"></script></head>'))

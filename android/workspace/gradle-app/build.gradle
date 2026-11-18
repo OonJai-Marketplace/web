@@ -1,0 +1,13 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'org.oonjai.workspace'
+ compileSdk 35
+ defaultConfig { applicationId 'org.oonjai.workspace'; minSdk 26; targetSdk 35; versionCode 5; versionName '1.4' }
+ sourceSets.main { manifest.srcFile '../AndroidManifest.xml'; java.srcDirs = ['../src']; assets.srcDirs = [System.getenv('OJM_WORKSPACE_ASSETS') ?: '../staged-assets'] }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+ buildTypes { release { minifyEnabled false } }
+}
+dependencies {
+ implementation 'com.google.android.gms:play-services-mlkit-document-scanner:16.0.0'
+ implementation 'androidx.webkit:webkit:1.14.0'
+}
