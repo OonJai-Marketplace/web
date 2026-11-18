@@ -1,3 +1,5 @@
+Native scanner update: see [RELEASE-1.4-PENDING.md](RELEASE-1.4-PENDING.md). It requires the retained Workspace signing key before publication.
+
 # Oon Jai for Android
 
 Version 1.0 uses a native Android home activity and four locally bundled web workspaces. Each workspace has its own HTTPS origin in Android WebView. Workspace HTML, scripts and artwork ship inside the APK. Authentication and cloud records use the services configured by each workspace. Android Back follows workspace history. The Hub button returns directly to the home screen.

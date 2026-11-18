@@ -1,2 +1,8 @@
 node_modules/
 test-results/
+
+android/workspace/.gradle/
+android/workspace/gradle-app/build/
+android/workspace/staged-assets/
+android/workspace/local.properties
+android/workspace/build/

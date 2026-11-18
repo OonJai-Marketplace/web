@@ -15,6 +15,7 @@ import java.util.Locale;
 public class WorkspaceActivity extends Activity {
     private String area, host;
     private WebView page;
+    private ReceiptScanner receiptScanner;
     private PermissionRequest cameraRequest;
     private ValueCallback<Uri[]> fileResult;
 
@@ -51,6 +52,7 @@ public class WorkspaceActivity extends Activity {
         bar.addView(name);
         if (!"hub".equals(area)) view.addView(bar);
         page = new WebView(this);
+        if ("accounting".equals(area)) receiptScanner = new ReceiptScanner(this,page);
         view.addView(page, new LinearLayout.LayoutParams(-1,0,1));
         setContentView(view);
         WebSettings settings = page.getSettings();
@@ -73,6 +75,9 @@ public class WorkspaceActivity extends Activity {
                 if ("hub".equals(area)) {
                     if (!request.isForMainFrame() || !local(uri)) return true;
                     String path = uri.getPath();
+                    if ("/update".equals(path)) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://oonjai-marketplace.github.io/web/hub/"))); return true;
+                    }
                     if ("/share".equals(path)) {
                         startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).setType("text/plain")
                             .putExtra(Intent.EXTRA_TEXT,"https://oonjai-marketplace.github.io/web/hub/"), null));
@@ -157,11 +162,12 @@ public class WorkspaceActivity extends Activity {
     }
     @Override protected void onActivityResult(int code,int result,Intent data) {
         super.onActivityResult(code,result,data);
+        if(receiptScanner!=null && receiptScanner.result(code,result,data)) return;
         if(code==18 && fileResult!=null) {
             fileResult.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result,data)); fileResult=null;
         }
     }
     @Override public void onBackPressed() { if(page!=null && page.canGoBack()) page.goBack(); else super.onBackPressed(); }
     @Override protected void onSaveInstanceState(Bundle out) { super.onSaveInstanceState(out); if(page!=null)page.saveState(out); }
-    @Override protected void onDestroy() { if(page!=null){page.stopLoading();page.destroy();} super.onDestroy(); }
+    @Override protected void onDestroy() { if(receiptScanner!=null)receiptScanner.close();if(page!=null){page.stopLoading();page.destroy();} super.onDestroy(); }
 }
